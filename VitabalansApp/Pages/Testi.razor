@@ -1,0 +1,56 @@
+﻿@page "/Testisivu"
+@inject IArticlesData articlesData
+
+<h3>Testisivu</h3>
+
+<input
+    type="text"
+    placeholder="Hae..."
+    aria-label="Hakukenttä"
+    @oninput="((i) => SearchHandler((string)i.Value))"
+    />
+<div>
+    @if (articles is not null && articles.Count() < 10)
+    {
+        foreach(var article in articles)
+        {
+            <div>
+                <div>Name: @article.Name</div>
+            </div>
+        }
+    }
+</div>
+<div>
+    
+</div>
+
+
+@code {
+    private string searchText = "";
+    private IEnumerable<ArticlesModel>? articles;
+
+    protected async override Task OnInitializedAsync()
+    {
+
+    }
+
+    private async Task FilterArticles()
+    {
+        var filtered = await articlesData.GetArticleNames();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filtered = filtered.Where(a => a.Name.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        articles = filtered;
+    }
+
+    private async Task SearchHandler(string text)
+    {
+        searchText = text;
+        await FilterArticles();
+    }
+
+    // toiseen komponenttiin
+}

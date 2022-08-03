@@ -1,0 +1,17 @@
+﻿@page "/"
+@inject NavigationManager navMngr
+
+<PageTitle>Index</PageTitle>
+
+<h1>Lääkefirma Oy</h1>
+
+<button @onclick="GoToTestPage">Testisivulle</button>
+
+
+@code{
+
+    private void GoToTestPage()
+    {
+        navMngr.NavigateTo("/Testisivu");
+    }
+}
