@@ -1,0 +1,20 @@
+﻿<h3>@chosenArticle.Name</h3>
+
+<div>
+    Päivitetty: @chosenArticle.UpdatedAt
+    EAN: @chosenArticle.Ean
+    <button @onclick="CloseArticle">Poistu</button>
+</div>
+
+@code {
+    [CascadingParameter(Name = "ChosenArticle")]
+    private ArticlesModel chosenArticle { get; set; }
+
+    [Parameter]
+    public EventCallback CloseComponent { get; set; }
+
+    private void CloseArticle()
+    {
+        CloseComponent.InvokeAsync();
+    }
+}
