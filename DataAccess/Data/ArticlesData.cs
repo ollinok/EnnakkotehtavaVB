@@ -1,6 +1,4 @@
 ﻿using DataAccess.DbAccess;
-using DataAccess.Models;
-using DataAccess.Models.HelperModels;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DataAccess.Data;

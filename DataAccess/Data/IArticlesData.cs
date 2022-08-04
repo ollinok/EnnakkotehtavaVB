@@ -1,7 +1,4 @@
-﻿using DataAccess.Models;
-using DataAccess.Models.HelperModels;
-
-namespace DataAccess.Data
+﻿namespace DataAccess.Data
 {
     public interface IArticlesData
     {
