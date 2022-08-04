@@ -52,7 +52,7 @@ public class ArticlesData : IArticlesData
     public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id)
     {
         string sqlProcedure = @"select articles.id, articles.name, articles.ean, articles.created_at CreatedAt, articles.updated_at UpdatedAt,
-                                       prices.price,
+                                       prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,
                                        price_groups.name
                                 from articles
                                 left join prices on prices.article_id = articles.id

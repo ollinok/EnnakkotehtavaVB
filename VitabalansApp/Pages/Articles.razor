@@ -1,6 +1,5 @@
 ﻿@page "/Articles"
 @inject IArticlesData articlesData
-@using DataAccess.Models.HelperModels
 @using VitabalansApp.Pages.Components;
 
 <h1>Myyntiartikkelit</h1>
@@ -12,7 +11,7 @@
     @oninput="((i) => SearchHandler((string)i.Value!))"
     />
 <div>
-    @if (articles is not null && articles.Count() < 10)
+    @if (articles is not null && articles.Count() < 20)
     {
         foreach(var article in articles)
         {
