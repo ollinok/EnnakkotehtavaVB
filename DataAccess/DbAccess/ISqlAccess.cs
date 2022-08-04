@@ -1,6 +1,4 @@
-﻿using DataAccess.Models.HelperModels;
-
-namespace DataAccess.DbAccess
+﻿namespace DataAccess.DbAccess
 {
     public interface ISqlAccess
     {
