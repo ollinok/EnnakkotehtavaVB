@@ -1,6 +1,4 @@
 ﻿using Dapper;
-using DataAccess.Models;
-using DataAccess.Models.HelperModels;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -34,6 +32,14 @@ public class SqlAccess : ISqlAccess
     public async Task<IEnumerable<T1>> LoadMultiMapSqlData<T1, T2, U>(string sqlProcedure, U parameters, Func<T1,T2,T1> func, string splitCol, string connectionId = "default")
     {
         using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId)); 
+
+        var rows = await connection.QueryAsync(sqlProcedure, func, parameters, splitOn: splitCol);
+        return rows;
+    }
+
+    public async Task<IEnumerable<T1>> LoadMultiMapSqlData<T1, T2, T3, U>(string sqlProcedure, U parameters, Func<T1, T2, T3, T1> func, string splitCol, string connectionId = "default")
+    {
+        using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));
 
         var rows = await connection.QueryAsync(sqlProcedure, func, parameters, splitOn: splitCol);
         return rows;

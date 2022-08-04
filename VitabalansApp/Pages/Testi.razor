@@ -25,15 +25,18 @@
     @if (chosenArticle is not null)
     {
         <div>
-            Name: @chosenArticle.First().Name;
+            Nimi: @chosenArticle.First().Name;
             EAN: @chosenArticle.First().Ean;
         </div>
-        @foreach (var article in chosenArticle)
-        {
-            <div>
-                Hinta: @article.Price.Price
-            </div>
-        }
+        <div>
+            <h4>Hintaluokat</h4>
+            @foreach (var article in chosenArticle)
+            {
+                <div>
+                    @article.PriceGroup!.Name;: @article.Price!.Price;
+                </div>
+            }
+        </div>
     }
 </div>
 
@@ -53,7 +56,7 @@
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-            filtered = filtered.Where(a => a.Name.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
         }
 
         articles = filtered;

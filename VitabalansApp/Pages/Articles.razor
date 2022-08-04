@@ -1,5 +1,6 @@
 ﻿@page "/Articles"
 @inject IArticlesData articlesData
+@using DataAccess.Models.HelperModels
 @using VitabalansApp.Pages.Components;
 
 <h1>Myyntiartikkelit</h1>
@@ -8,7 +9,7 @@
     type="text"
     placeholder="Hae..."
     aria-label="Hakukenttä"
-    @oninput="((i) => SearchHandler((string)i.Value))"
+    @oninput="((i) => SearchHandler((string)i.Value!))"
     />
 <div>
     @if (articles is not null && articles.Count() < 10)
@@ -33,7 +34,7 @@
 
 @code {
     private string searchText = "";
-    private ArticlesModel? chosenArticle;
+    private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
 
     //protected async override Task OnInitializedAsync()
@@ -47,7 +48,7 @@
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-            filtered = filtered.Where(a => a.Name.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
         }
 
         articles = filtered;
@@ -61,7 +62,7 @@
 
     private async Task OpenArticleInfo(ArticlesModel article)
     {
-        chosenArticle = await articlesData.GetArticle(article.Id);
+        chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
     }
 
     private void CloseArticleInfo() => chosenArticle = null;

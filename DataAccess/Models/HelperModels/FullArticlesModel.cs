@@ -2,4 +2,5 @@
 public class FullArticlesModel : ArticlesModel
 {
     public PricesModel? Price { get; set; }
+    public PriceGroupsModel? PriceGroup { get; set; }
 }
