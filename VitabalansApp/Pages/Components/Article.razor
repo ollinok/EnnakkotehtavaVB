@@ -1,0 +1,44 @@
+﻿@if (chosenArticle is not null)
+{
+    <h3>@chosenArticle.First().Name</h3>
+        <div>
+        Päivitetty: @(chosenArticle.First().UpdatedAt is not null ? chosenArticle.First().UpdatedAt : chosenArticle.First().CreatedAt)
+        EAN: @chosenArticle.First().Ean
+        <table>
+            <thead>
+                <tr>
+                    <th>Hintatyhmä</th>
+                    <th>Hinta</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in chosenArticle)
+                {
+                    <tr>
+                        <td>@(row.PriceGroup!.Name is not null ? row.PriceGroup.Name : "-")</td>
+                        <td>@(row.Price!.Price is not null ? row.Price.Price : "-")</td>
+                    </tr>    
+                }        
+            </tbody>
+        </table>
+        <button @onclick="CloseArticle">Poistu</button>
+    </div>
+}
+else
+{
+    <div>Virhe myyntiartikkelin haussa.</div>
+    <button @onclick="CloseArticle">Poistu</button>
+}
+
+@code {
+    [CascadingParameter(Name = "ChosenArticle")]
+    private IEnumerable<FullArticlesModel>? chosenArticle { get; set; }
+
+    [Parameter]
+    public EventCallback CloseComponent { get; set; }
+
+    private void CloseArticle()
+    {
+        CloseComponent.InvokeAsync();
+    }
+}

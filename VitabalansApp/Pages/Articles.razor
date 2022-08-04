@@ -1,14 +1,15 @@
-﻿@page "/Testisivu"
-@using DataAccess.Models.HelperModels
+﻿@page "/Articles"
 @inject IArticlesData articlesData
+@using DataAccess.Models.HelperModels
+@using VitabalansApp.Pages.Components;
 
-<h3>Testisivu</h3>
+<h1>Myyntiartikkelit</h1>
 
 <input
     type="text"
     placeholder="Hae..."
     aria-label="Hakukenttä"
-    @oninput="((i) => SearchHandler((string)i.Value))"
+    @oninput="((i) => SearchHandler((string)i.Value!))"
     />
 <div>
     @if (articles is not null && articles.Count() < 10)
@@ -24,25 +25,16 @@
 <div>
     @if (chosenArticle is not null)
     {
-        <div>
-            Nimi: @chosenArticle.First().Name;
-            EAN: @chosenArticle.First().Ean;
-        </div>
-        <div>
-            <h4>Hintaluokat</h4>
-            @foreach (var article in chosenArticle)
-            {
-                <div>
-                    @article.PriceGroup!.Name;: @article.Price!.Price;
-                </div>
-            }
-        </div>
+        <CascadingValue Value="chosenArticle" Name="ChosenArticle">
+            <Article CloseComponent="@CloseArticleInfo"/>
+        </CascadingValue>
     }
 </div>
 
 
 @code {
     private string searchText = "";
+    private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
 
     //protected async override Task OnInitializedAsync()
@@ -70,12 +62,9 @@
 
     private async Task OpenArticleInfo(ArticlesModel article)
     {
-        //chosenArticle = await articlesData.GetFullArticleInfo(articleId);
         chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
     }
 
-    // toiseen komponenttiin
-
-    private IEnumerable<FullArticlesModel> chosenArticle;
+    private void CloseArticleInfo() => chosenArticle = null;
 
 }
