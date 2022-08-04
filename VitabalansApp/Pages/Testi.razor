@@ -1,4 +1,5 @@
 ﻿@page "/Testisivu"
+@using DataAccess.Models.HelperModels
 @inject IArticlesData articlesData
 
 <h3>Testisivu</h3>
@@ -24,9 +25,15 @@
     @if (chosenArticle is not null)
     {
         <div>
-            Name: @chosenArticle.Name
-            EAN: @chosenArticle.Ean
+            Name: @chosenArticle.First().Name;
+            EAN: @chosenArticle.First().Ean;
         </div>
+        @foreach (var article in chosenArticle)
+        {
+            <div>
+                Hinta: @article.Price.Price
+            </div>
+        }
     }
 </div>
 
@@ -60,11 +67,12 @@
 
     private async Task OpenArticleInfo(ArticlesModel article)
     {
-        chosenArticle = await articlesData.GetArticle(article.Id);
+        //chosenArticle = await articlesData.GetFullArticleInfo(articleId);
+        chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
     }
 
     // toiseen komponenttiin
 
-    private ArticlesModel? chosenArticle;
+    private IEnumerable<FullArticlesModel> chosenArticle;
 
 }

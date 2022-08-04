@@ -1,4 +1,5 @@
 ﻿using DataAccess.Models;
+using DataAccess.Models.HelperModels;
 
 namespace DataAccess.Data
 {
@@ -6,5 +7,6 @@ namespace DataAccess.Data
     {
         Task<ArticlesModel?> GetArticle(int id);
         Task<IEnumerable<ArticlesModel>> GetArticleNames();
+        Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id);
     }
 }
