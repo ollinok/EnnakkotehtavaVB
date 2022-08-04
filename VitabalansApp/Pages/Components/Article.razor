@@ -15,8 +15,8 @@
                 @foreach (var row in chosenArticle)
                 {
                     <tr>
-                        <td>@(row.PriceGroup!.Name is not null ? row.PriceGroup.Name : "-")</td>
-                        <td>@(row.Price!.Price is not null ? row.Price.Price : "-")</td>
+                        <td>@(row.PriceGroup?.Name is not null ? row.PriceGroup.Name : "-")</td>
+                        <td>@(row.Price?.Price is not null ? row.Price.Price : "-")</td>
                     </tr>    
                 }        
             </tbody>
