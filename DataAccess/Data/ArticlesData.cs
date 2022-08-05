@@ -1,13 +1,11 @@
-﻿using DataAccess.DbAccess;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace DataAccess.Data;
-
 public class ArticlesData : IArticlesData
 {
     private readonly ISqlAccess _db;
     private readonly IMemoryCache _cache;
-    private const string cacheName = "ArticleCache";
+    private const string cacheName = "ArticlesCache";
 
     public ArticlesData(ISqlAccess db, IMemoryCache cache)
     {
@@ -15,12 +13,12 @@ public class ArticlesData : IArticlesData
         _cache = cache;
     }
 
-    public async Task<IEnumerable<ArticlesModel>> GetArticleNames()
+    public async Task<IEnumerable<ArticlesModel>> GetAllArticleNames()
     {
         var results = _cache.Get<IEnumerable<ArticlesModel>>(cacheName);
         if (results == null)
         {
-            string sqlProcedure = "select id, name from articles";
+            string sqlProcedure = "select id, name from articles order by name";
             results = await _db.LoadSqlData<ArticlesModel, dynamic>(sqlProcedure, new { });
 
             _cache.Set(cacheName, results, TimeSpan.FromMinutes(5));
