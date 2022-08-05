@@ -2,11 +2,8 @@
 @inject ICustomersData customersData
 @inject ProtectedSessionStorage sessionStorage;
 
-<h1>Hae asiakkaita</h1>
 <div>
-    Aakkonen on: @chosenAlphabet
-</div>
-<div>
+    <h1>Hae asiakkaita</h1>
     <div>
         <div>
             <input
@@ -28,19 +25,29 @@
         </div>
     </div>
     <div>
-        @if (customers is not null)
+        @if (customers is not null && isFiltered)
         {
             <div>@customers.Count()</div>
+            <div>
+                <ul>
+                    <Virtualize Items="@customers" Context="c" OverscanCount="20">
+                        <li>
+                            @c.Name
+                        </li>
+                    </Virtualize>
+                </ul> 
+            </div>
         }
-        
     </div>
 </div>
 
 @code {
     private string searchText = "";
     private char? chosenAlphabet;
-    private IEnumerable<CustomersModel>? customers;
+    private bool isFiltered = false;
     private char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".ToCharArray();
+
+    private List<CustomersModel>? customers;
 
     //protected async override Task OnInitializedAsync()
     //{
@@ -71,12 +78,14 @@
     private async Task SearchHandler(string text)
     {
         searchText = text;
+        chosenAlphabet = null;
         await FilterCustomers();
     }
 
     private async Task AlphabetHandler(char letter)
     {    
         chosenAlphabet = letter;
+        searchText = "";
         await FilterCustomers();
     }
 
@@ -84,11 +93,22 @@
     {
         var filtered = await customersData.GetAllCustomerNames();
 
-        if (!string.IsNullOrWhiteSpace(searchText))
+        if (chosenAlphabet is not null)
+        {
+            filtered = filtered.Where(a => a.Name!.StartsWith(chosenAlphabet.ToString()!, StringComparison.CurrentCultureIgnoreCase));
+            isFiltered = true;
+        }
+        else if (!string.IsNullOrWhiteSpace(searchText))
         {
             filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+            isFiltered = true;
         }
-        customers = filtered;
+        else
+        {
+            isFiltered = false;
+        }
+
+        customers = filtered.ToList();
 
         await SaveFilterState();
     }
