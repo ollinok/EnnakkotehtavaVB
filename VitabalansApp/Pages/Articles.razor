@@ -3,42 +3,45 @@
 @using VitabalansApp.Pages.Components;
 
 <div>
-    <h1>Myyntiartikkelit</h1>
     <div>
-        <input
-            type="text"
-            placeholder="Hae..."
-            aria-label="Hakukenttä"
-            @oninput="((i) => SearchHandler((string)i.Value!))"
-        />
-    </div>
-    <div>
-        @if (articles is not null && articles.Count() <= 10)
-        {
-            foreach(var article in articles)
+        <h1>Myyntiartikkelit</h1>
+        <div>
+            <input
+                type="text"
+                placeholder="Hae..."
+                aria-label="Hakukenttä"
+                @oninput="((i) => SearchHandler((string)i.Value!))"
+            />
+        </div>
+        <div>
+            @if (articles is not null && articles.Count() <= 10)
+            {
+                foreach(var article in articles)
+                {
+                    <div>
+                        <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                    </div>
+                }
+            }
+    @*        else if (articles?.Count() > 10)
             {
                 <div>
-                    <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                    Tarkenna hakua.
                 </div>
-            }
-        }
-@*        else if (articles?.Count() > 10)
+            }*@
+        </div>
+    </div>
+
+    <div>
+        @if (chosenArticle is not null)
         {
-            <div>
-                Tarkenna hakua.
-            </div>
-        }*@
+            <CascadingValue Value="chosenArticle" Name="ChosenArticle">
+                <Article CloseComponent="@CloseArticleInfo"/>
+            </CascadingValue>
+        }
     </div>
 </div>
 
-<div>
-    @if (chosenArticle is not null)
-    {
-        <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-            <Article CloseComponent="@CloseArticleInfo"/>
-        </CascadingValue>
-    }
-</div>
 
 
 @code {
