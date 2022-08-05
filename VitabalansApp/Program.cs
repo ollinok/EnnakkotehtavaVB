@@ -1,4 +1,4 @@
-using DataAccess.Data;
+﻿using DataAccess.Data;
 using DataAccess.DbAccess;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -8,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IArticlesData, ArticlesData>();
+builder.Services.AddSingleton<ICustomersData, CustomersData>();
 
 var app = builder.Build();
 

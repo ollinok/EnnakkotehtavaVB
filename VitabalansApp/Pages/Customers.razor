@@ -1,6 +1,95 @@
 ﻿@page "/Customers"
-<h1>Customers</h1>
+@inject ICustomersData customersData
+@inject ProtectedSessionStorage sessionStorage;
+
+<h1>Hae asiakkaita</h1>
+<div>
+    Aakkonen on: @chosenAlphabet
+</div>
+<div>
+    <div>
+        <div>
+            <input
+                type="text"
+                placeholder="Hae..."
+                aria-label="Hakukenttä"
+                @oninput="((i) => SearchHandler((string)i.Value!))"
+            />
+        </div>
+        <div>
+            <ul class="list-group list-group-horizontal">
+                @foreach (var letter in alphabet)
+                {
+                    <li class="list-group-item" @onclick="(() => AlphabetHandler(letter))">
+                        @letter
+                    </li>
+                }
+            </ul>   
+        </div>
+    </div>
+    <div>
+        @if (customers is not null)
+        {
+            <div>@customers.Count()</div>
+        }
+        
+    </div>
+</div>
 
 @code {
+    private string searchText = "";
+    private char? chosenAlphabet;
+    private IEnumerable<CustomersModel>? customers;
+    private char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".ToCharArray();
 
+    //protected async override Task OnInitializedAsync()
+    //{
+
+    //}
+
+    protected async override Task OnAfterRenderAsync(bool firstReload)
+    {
+        if (firstReload)
+        {
+            await GetFilterState();
+            await FilterCustomers();
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetFilterState()
+    {
+        var results = await sessionStorage.GetAsync<string>(nameof(searchText));
+        searchText = results.Success! ? results.Value! : "";
+    }
+
+    private async Task SaveFilterState()
+    {
+        await sessionStorage.SetAsync(nameof(searchText), searchText);
+    }
+
+    private async Task SearchHandler(string text)
+    {
+        searchText = text;
+        await FilterCustomers();
+    }
+
+    private async Task AlphabetHandler(char letter)
+    {    
+        chosenAlphabet = letter;
+        await FilterCustomers();
+    }
+
+    private async Task FilterCustomers()
+    {
+        var filtered = await customersData.GetAllCustomerNames();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+        }
+        customers = filtered;
+
+        await SaveFilterState();
+    }
 }
