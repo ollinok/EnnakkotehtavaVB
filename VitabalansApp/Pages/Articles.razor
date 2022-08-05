@@ -2,25 +2,36 @@
 @inject IArticlesData articlesData
 @using VitabalansApp.Pages.Components;
 
-<h1>Myyntiartikkelit</h1>
 
-<input
-    type="text"
-    placeholder="Hae..."
-    aria-label="Hakukenttä"
-    @oninput="((i) => SearchHandler((string)i.Value!))"
-    />
 <div>
-    @if (articles is not null && articles.Count() < 20)
-    {
-        foreach(var article in articles)
+    <h1>Myyntiartikkelit</h1>
+    <div>
+        <input
+            type="text"
+            placeholder="Hae..."
+            aria-label="Hakukenttä"
+            @oninput="((i) => SearchHandler((string)i.Value!))"
+        />
+    </div>
+    <div>
+        @if (articles is not null && articles.Count() <= 10)
+        {
+            foreach(var article in articles)
+            {
+                <div>
+                    <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                </div>
+            }
+        }
+@*        else if (articles?.Count() > 10)
         {
             <div>
-                <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                Tarkenna hakua.
             </div>
-        }
-    }
+        }*@
+    </div>
 </div>
+
 <div>
     @if (chosenArticle is not null)
     {
