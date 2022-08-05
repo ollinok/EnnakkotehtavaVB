@@ -1,29 +1,40 @@
 ﻿@if (chosenArticle is not null)
 {
-    <h3>@chosenArticle.First().Name</h3>
+    <div>
         <div>
-        Päivitetty: @(chosenArticle.First().UpdatedAt != DateTime.MinValue ? chosenArticle.First().UpdatedAt.ToString("d") : chosenArticle.First().CreatedAt.ToString("d"))
-        EAN: @chosenArticle.First().Ean
-        <table>
-            <thead>
-                <tr>
-                    <th>Luokka</th>
-                    <th>Hinta</th>
-                    <th>Päiväys</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var row in chosenArticle)
-                {
+            <h2>@chosenArticle.First().Name</h2>
+            <button @onclick="CloseArticle">Poistu</button>
+        </div>
+        <div>
+            EAN: @chosenArticle.First().Ean
+        </div>
+        <div>
+            <img src="/images/pilleri.png" alt="lääke" width="300" height="300"/>
+            @(chosenArticle.First().UpdatedAt != DateTime.MinValue ? chosenArticle.First().UpdatedAt.ToString("d") : chosenArticle.First().CreatedAt.ToString("d"))
+        </div>
+        <hr />
+        <div>
+            <h3>Hinnasto</h3>
+            <table>
+                <thead>
                     <tr>
-                        <td>@(row.PriceGroup?.Name is not null ? row.PriceGroup.Name : "-")</td>
-                        <td>@(row.Price?.Price is not null ? row.Price.Price : "-")</td>
-                        <td>@(row.Price?.UpdatedAt is not null ? row.Price.UpdatedAt.ToString("d") : row.Price?.CreatedAt.ToString("d"))</td>
-                    </tr>    
-                }        
-            </tbody>
-        </table>
-        <button @onclick="CloseArticle">Poistu</button>
+                        <th>Luokka</th>
+                        <th>Hinta</th>
+                        <th>Päiväys</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in chosenArticle)
+                    {
+                        <tr>
+                            <td>@(row.PriceGroup?.Name is not null ? row.PriceGroup.Name : "-")</td>
+                            <td>@(row.Price?.Price is not null ? row.Price.Price : "-")</td>
+                            <td>@(row.Price?.UpdatedAt is not null ? row.Price.UpdatedAt.ToString("d") : row.Price?.CreatedAt.ToString("d"))</td>
+                        </tr>    
+                    }        
+                </tbody>
+            </table>  
+        </div>
     </div>
 }
 else
