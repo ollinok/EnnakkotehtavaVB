@@ -43,7 +43,7 @@
 
 @code {
     private string searchText = "";
-    private char? chosenAlphabet;
+    private string chosenAlphabet = "";
     private bool isFiltered = false;
     private char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".ToCharArray();
 
@@ -67,24 +67,28 @@
     private async Task GetFilterState()
     {
         var results = await sessionStorage.GetAsync<string>(nameof(searchText));
-        searchText = results.Success! ? results.Value! : "";
+        searchText = results.Success && results.Value is not null ? results.Value : "";
+
+        results = await sessionStorage.GetAsync<string>(nameof(chosenAlphabet));
+        chosenAlphabet = results.Success && results.Value is not null ? results.Value : "";
     }
 
     private async Task SaveFilterState()
     {
         await sessionStorage.SetAsync(nameof(searchText), searchText);
+        await sessionStorage.SetAsync(nameof(chosenAlphabet), chosenAlphabet);
     }
 
     private async Task SearchHandler(string text)
     {
         searchText = text;
-        chosenAlphabet = null;
+        chosenAlphabet = "";
         await FilterCustomers();
     }
 
     private async Task AlphabetHandler(char letter)
     {    
-        chosenAlphabet = letter;
+        chosenAlphabet = letter.ToString();
         searchText = "";
         await FilterCustomers();
     }
@@ -93,9 +97,9 @@
     {
         var filtered = await customersData.GetAllCustomerNames();
 
-        if (chosenAlphabet is not null)
+        if (!string.IsNullOrWhiteSpace(chosenAlphabet))
         {
-            filtered = filtered.Where(a => a.Name!.StartsWith(chosenAlphabet.ToString()!, StringComparison.CurrentCultureIgnoreCase));
+            filtered = filtered.Where(a => a.Name!.StartsWith(chosenAlphabet, StringComparison.CurrentCultureIgnoreCase));
             isFiltered = true;
         }
         else if (!string.IsNullOrWhiteSpace(searchText))
