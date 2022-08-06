@@ -2,5 +2,5 @@
 public class FullCustomersModel : CustomersModel
 {
     public PriceGroupsModel? PriceGroup { get; set; }
-    public OrdersModel? Orders { get; set; }
+    public int TotalOrders { get; set; }
 }

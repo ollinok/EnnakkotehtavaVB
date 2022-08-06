@@ -21,7 +21,7 @@ public class ArticlesData : IArticlesData
             string sqlProcedure = "select id, name from articles order by name";
             results = await _db.LoadSqlData<ArticlesModel, dynamic>(sqlProcedure, new { });
 
-            _cache.Set(cacheName, results, TimeSpan.FromMinutes(5));
+            _cache.Set(cacheName, results, TimeSpan.FromMinutes(1));
         }
         return results;
     }

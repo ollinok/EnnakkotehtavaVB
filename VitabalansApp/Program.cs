@@ -9,9 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMemoryCache();
+
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IArticlesData, ArticlesData>();
 builder.Services.AddSingleton<ICustomersData, CustomersData>();
+builder.Services.AddSingleton<IOrdersData, OrdersData>();
 
 var app = builder.Build();
 
