@@ -1,6 +1,7 @@
 ﻿@page "/Customers"
 @inject ICustomersData customersData
-@inject ProtectedSessionStorage sessionStorage;
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navMngr
 
 <div>
     <h1>Hae asiakkaita</h1>
@@ -31,7 +32,7 @@
             <div>
                 <ul>
                     <Virtualize Items="@customers" Context="c" OverscanCount="20">
-                        <li>
+                        <li @onclick="(() => GoToCustomerPage(c))">
                             @c.Name
                         </li>
                     </Virtualize>
@@ -115,5 +116,10 @@
         customers = filtered.ToList();
 
         await SaveFilterState();
+    }
+
+    private void GoToCustomerPage(CustomersModel customer)
+    {
+        navMngr.NavigateTo($"/CustomerInfo/{customer.Id}");
     }
 }

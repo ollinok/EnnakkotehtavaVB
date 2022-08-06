@@ -25,4 +25,20 @@ public class CustomersData : ICustomersData
         }
         return results;
     }
+
+    public async Task<IEnumerable<FullCustomersModel>> GetFullCustomerInfo(int id)
+    {
+        string sqlProcedure = @"select customers.id, customers.name, customers.email, customers.address, customers.created_at CreatedAt, customers.updated_at UpdatedAt,
+                                       price_groups.name,
+                                       orders.id, orders.created_at CreatedAt, orders.updated_at UpdatedAt
+                                from customers
+                                left join price_groups on price_groups.id = customers.price_group_id
+                                left join orders on orders.customer_id = customers.id
+                                where customers.id = @Id";
+        Func<FullCustomersModel, PriceGroupsModel, OrdersModel, FullCustomersModel> func
+            = (customer, priceGroup, orders) => { customer.PriceGroup = priceGroup; customer.Orders = orders; return customer; };
+        string splitOn = "name,id";
+
+        return await _db.LoadMultiMapSqlData<FullCustomersModel, PriceGroupsModel, OrdersModel, dynamic>(sqlProcedure, new { Id = id }, func, splitOn);
+    }
 }
