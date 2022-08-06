@@ -21,24 +21,24 @@ public class CustomersData : ICustomersData
             string sqlProcedure = "select id, name from customers order by name";
             results = await _db.LoadSqlData<CustomersModel, dynamic>(sqlProcedure, new { });
 
-            _cache.Set(cacheName, results, TimeSpan.FromMinutes(5));
+            _cache.Set(cacheName, results, TimeSpan.FromMinutes(1));
         }
         return results;
     }
 
-    public async Task<IEnumerable<FullCustomersModel>> GetFullCustomerInfo(int id)
+    public async Task<FullCustomersModel?> GetCustomerInfo(int id)
     {
-        string sqlProcedure = @"select customers.id, customers.name, customers.email, customers.address, customers.created_at CreatedAt, customers.updated_at UpdatedAt,
-                                       price_groups.name,
-                                       orders.id, orders.created_at CreatedAt, orders.updated_at UpdatedAt
-                                from customers
-                                left join price_groups on price_groups.id = customers.price_group_id
-                                left join orders on orders.customer_id = customers.id
-                                where customers.id = @Id";
-        Func<FullCustomersModel, PriceGroupsModel, OrdersModel, FullCustomersModel> func
-            = (customer, priceGroup, orders) => { customer.PriceGroup = priceGroup; customer.Orders = orders; return customer; };
-        string splitOn = "name,id";
+        string sql = @"select customers.id, customers.name, customers.email, customers.address, customers.created_at CreatedAt, customers.updated_at UpdatedAt,
+                              price_groups.name,
+                              count(orders.id) as TotalOrders
+                       from customers
+                       left join price_groups on price_groups.id = customers.price_group_id
+                       left join orders on orders.customer_id = customers.id
+                       where customers.id = @Id";
+        Func<FullCustomersModel, PriceGroupsModel, long, FullCustomersModel> func
+            = (customer, priceGroup, orders) => { customer.PriceGroup = priceGroup; customer.TotalOrders = (int)orders; return customer; };
+        string splitOn = "name,TotalOrders";
 
-        return await _db.LoadMultiMapSqlData<FullCustomersModel, PriceGroupsModel, OrdersModel, dynamic>(sqlProcedure, new { Id = id }, func, splitOn);
+        return (await _db.LoadMultiMapSqlData<FullCustomersModel, PriceGroupsModel, long, dynamic>(sql, new { Id = id }, func, splitOn)).FirstOrDefault();
     }
 }

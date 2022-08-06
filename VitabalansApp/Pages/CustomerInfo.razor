@@ -1,5 +1,6 @@
 ﻿@page "/CustomerInfo/{Id}"
 @inject ICustomersData customersData
+@inject IOrdersData ordersData
 
 
 @if (customer is not null)
@@ -7,6 +8,7 @@
     <div>
         <div>
             @customer.Name
+            Orders: @customer.TotalOrders
         </div>
     </div>
 }
@@ -16,12 +18,14 @@
     public string? Id { get; set; }
 
     private FullCustomersModel? customer;
+    private IEnumerable<FullOrdersModel>? orders;
 
     protected async override Task OnInitializedAsync()
     {
         if (Id is not null)
         {
-            customer = (await customersData.GetFullCustomerInfo(int.Parse(Id))).FirstOrDefault();    
+            customer = await customersData.GetCustomerInfo(int.Parse(Id));
+            //orders = await ordersData.GetAllOrdersByCustomerId(int.Parse(Id));
         }
     }
 }
