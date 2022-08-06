@@ -1,8 +1,27 @@
 ﻿@page "/CustomerInfo/{Id}"
-<h3>CustomerInfo</h3>
+@inject ICustomersData customersData
+
+
+@if (customer is not null)
+{
+    <div>
+        <div>
+            @customer.Name
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
-    public int id { get; set; }
+    public string? Id { get; set; }
 
+    private FullCustomersModel? customer;
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (Id is not null)
+        {
+            customer = (await customersData.GetFullCustomerInfo(int.Parse(Id))).FirstOrDefault();    
+        }
+    }
 }
