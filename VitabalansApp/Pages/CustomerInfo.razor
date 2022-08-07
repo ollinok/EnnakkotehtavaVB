@@ -8,8 +8,42 @@
     <div>
         <div>
             @customer.Name
-            Orders: @customer.TotalOrders
+            Orders: @customer?.Orders?.Count()
         </div>
+        <div>
+            @if (hasOrders)
+            {
+                <div>
+                    <div @onclick="GetOrders">Hae tilaukset</div>
+                </div>
+            }else
+            {
+                <div>
+                    Asiakkaalla ei ole aikaisempia tilauksia.
+                </div>
+            }
+            
+            @if (orders is not null)
+            {
+                @foreach (var order in orders)
+                {
+                    <div>
+                        @order.Id
+                        @order.CreatedAt.ToString("g")
+                    </div>
+                    <div>
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <div>
+                                @item.Article.Name
+                                kpl @item.Quantity
+                                @item.Price
+                            </div>                      
+                        }
+                    </div>
+                }
+            }
+        </div>        
     </div>
 }
 
@@ -17,15 +51,19 @@
     [Parameter]
     public string? Id { get; set; }
 
+    private bool hasOrders;
+
     private FullCustomersModel? customer;
-    private IEnumerable<FullOrdersModel>? orders;
+    private List<FullOrdersModel>? orders = null;
 
     protected async override Task OnInitializedAsync()
     {
-        if (Id is not null)
-        {
-            customer = await customersData.GetCustomerInfo(int.Parse(Id));
-            //orders = await ordersData.GetAllOrdersByCustomerId(int.Parse(Id));
-        }
+        customer = await customersData.GetCustomerInfo(int.Parse(Id!));
+        hasOrders = customer?.Orders?.Count() != 0;
+    }
+
+    private async Task GetOrders()
+    {
+        orders = await ordersData.GetOrdersByList(customer.Orders);    
     }
 }

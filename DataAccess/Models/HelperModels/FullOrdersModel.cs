@@ -1,5 +1,5 @@
 ﻿namespace DataAccess.Models.HelperModels;
 public class FullOrdersModel : OrdersModel
 {
-    public FullOrderItemsModel? OrderItems { get; set; }
+    public IEnumerable<FullOrderItemsModel>? OrderItems { get; set; }
 }
