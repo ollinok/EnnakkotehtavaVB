@@ -2,5 +2,6 @@
 
 public interface IOrdersData
 {
-    Task<IEnumerable<FullOrdersModel>> GetAllOrdersByCustomerId(int id);
+    /*Task<IEnumerable<FullOrdersModel>> GetAllOrdersByCustomer(int id);*/
+    Task<List<FullOrdersModel>> GetOrdersByList(IEnumerable<OrdersModel> orders);
 }
