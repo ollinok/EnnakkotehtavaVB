@@ -1,0 +1,49 @@
+﻿@inject IOrdersData ordersData
+
+@if (hasOrders && orders is null)
+{
+    <div>
+        <div @onclick="GetOrders">
+            <h3>Hae tilaukset</h3>
+        </div>
+    </div>
+}else if (!hasOrders)
+{
+    <div>
+        Asiakkaalla ei ole aikaisempia tilauksia.
+    </div>
+}else if (orders is not null)
+{
+    @foreach (var order in orders)
+    {
+        <button>
+            @order.Id
+            @order.CreatedAt.ToString("g")
+        </button>
+        <div>
+            @foreach (var item in order.OrderItems)
+            {
+                <div>
+                    @item.Article.Name
+                    kpl @item.Quantity
+                    @item.Price
+                </div>                      
+            }
+        </div>
+    }
+}
+
+@code {
+    [CascadingParameter(Name = "Customer")]
+    private FullCustomersModel? customer { get; set; }
+
+    [CascadingParameter(Name = "HasOrders")]
+    private bool hasOrders { get; set; }
+
+    private List<FullOrdersModel>? orders = null;
+
+    private async Task GetOrders()
+    {
+        orders = await ordersData.GetOrdersByList(customer!.Orders!);    
+    }
+}
