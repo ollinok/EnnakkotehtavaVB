@@ -1,50 +1,81 @@
 ﻿@page "/CustomerInfo/{Id}"
 @inject ICustomersData customersData
 @inject IOrdersData ordersData
+@inject NavigationManager navMngr
+
+@using VitabalansApp.Pages.Components
 
 
 @if (customer is not null)
 {
-    <div>
-        <div>
-            @customer.Name
-            Orders: @customer?.Orders?.Count()
+    <div> <!-- Koko sivu-->
+        <div> <!-- 2. Yläpalkki -->
+            <div> <!-- 3. Nimi -->
+                <h2>@customer.Name</h2>
+            </div>
+            <div> <!-- 3. Napit -->
+                <div>
+                    Muokkaa
+                </div>
+                <div @onclick="GoToCustomersPage">
+                    Takaisin
+                </div>
+            </div>
         </div>
-        <div>
-            @if (hasOrders)
-            {
+        <div> <!-- 2. Infoalue -->
+            <div> <!-- 3. Kuva/Google Maps -->
+
+            </div>
+            <div> <!-- 3. Yhteystiedot -->
                 <div>
-                    <div @onclick="GetOrders">Hae tilaukset</div>
+                    @customer.Address?.Split(',')[0]
+                    @customer.Address?.Split(',')[1]
                 </div>
-            }else
-            {
                 <div>
-                    Asiakkaalla ei ole aikaisempia tilauksia.
+                    @customer.Email
                 </div>
-            }
-            
-            @if (orders is not null)
-            {
-                @foreach (var order in orders)
-                {
+            </div>
+            <div> <!-- 3. Hintaryhmä -->
+                <div>
+                    Hintaryhmä
+                </div>
+                <div>
+                    Symboli
+                </div>
+                <div>
+                    @customer.PriceGroup?.Name
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        
+        <div> <!-- 2. Tilausalue -->
+            <div> <!-- 3. Tilausyläpalkki -->
+                <div>
+                    <h3>Tilaukset</h3>
+                </div>
+                <div> <!-- 4. Määrä + järjestysnapit -->
                     <div>
-                        @order.Id
-                        @order.CreatedAt.ToString("g")
+                        Tilausten määrä: @customer?.Orders?.Count()
                     </div>
                     <div>
-                        @foreach (var item in order.OrderItems)
-                        {
-                            <div>
-                                @item.Article.Name
-                                kpl @item.Quantity
-                                @item.Price
-                            </div>                      
-                        }
+                        Uusimmat, Vanhimmat
                     </div>
-                }
-            }
-        </div>        
+                </div>
+            </div>
+            <div> <!-- 3. Tilausluettelo-->
+                <CascadingValue Value="customer" Name="Customer">
+                    <CascadingValue Value="hasOrders" Name="HasOrders">
+                        <CustomerOrderList />
+                    </CascadingValue>
+                </CascadingValue>
+            </div>
+        </div>      
     </div>
+}else
+{
+    <div>No customer found with the ID of @Id</div>
 }
 
 @code {
@@ -52,9 +83,7 @@
     public string? Id { get; set; }
 
     private bool hasOrders;
-
     private FullCustomersModel? customer;
-    private List<FullOrdersModel>? orders = null;
 
     protected async override Task OnInitializedAsync()
     {
@@ -62,8 +91,5 @@
         hasOrders = customer?.Orders?.Count() != 0;
     }
 
-    private async Task GetOrders()
-    {
-        orders = await ordersData.GetOrdersByList(customer.Orders);    
-    }
+    private void GoToCustomersPage() => navMngr.NavigateTo("/Customers");
 }
