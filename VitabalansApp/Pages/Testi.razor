@@ -4,22 +4,58 @@
 
 <h3>Testisivu</h3>
 
-<div @onclick="Eh">
-    Lisää olio
+<div>
+    <input
+        type="text"
+        placeholder="Hae..."
+        aria-label="Hakukenttä"
+        @oninput="((i) => SearchHandler((string)i.Value!))"
+    />
+    @if (namesOnly is not null && namesOnly.Count() > 1)
+    {
+        <div class="position-absolute">
+            <ul>
+                @foreach (var name in namesOnly)
+                {
+                    <li>@name</li>     
+                }
+            </ul>
+        </div>
+    }
 </div>
 <div>
-    @if (testihomma is not null)
-    {
-        @testihomma.Sum(item => item.Price);    
-    }
+    sdasdasdasd
 </div>
 
 
 @code {
-    private List<OrderItemsModel> testihomma;
+    private string searchText = "";
+    private IEnumerable<ArticlesModel>? articles;
 
-    private void Eh()
+    private IEnumerable<string>? namesOnly;
+
+    private async Task SearchHandler(string text)
     {
-        (testihomma ??= new()).Add(new OrderItemsModel { Price = (decimal)12.0 });
+        searchText = text;
+        await FilterArticles();
+    }
+
+    private async Task FilterArticles()
+    {
+        var filtered = await articlesData.GetAllArticleNames();
+        HashSet<string>? nameOnly = new HashSet<string>();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        articles = filtered;
+
+        foreach (var item in filtered)
+        {
+            nameOnly.Add(item.Name.Split(' ')[0]);
+        }
+        namesOnly = nameOnly.Take(10);
     }
 }
