@@ -27,9 +27,9 @@
                     @foreach (var row in chosenArticle)
                     {
                         <tr>
-                            <td>@(row.PriceGroup?.Name is not null ? row.PriceGroup.Name : "-")</td>
+                            <td>@row.PriceGroup?.Name</td>
                             <td>@(row.Price?.Price is not null ? row.Price.Price : "-")</td>
-                            <td>@(row.Price?.UpdatedAt is not null ? row.Price.UpdatedAt.ToString("d") : row.Price?.CreatedAt.ToString("d"))</td>
+                            <td>@(row.Price?.UpdatedAt != DateTime.MinValue ? row.Price?.UpdatedAt.ToString("d") : row.Price?.CreatedAt.ToString("d"))</td>
                         </tr>    
                     }        
                 </tbody>
