@@ -4,7 +4,7 @@
 {
     <div>
         <div @onclick="GetOrders">
-            <h3>Hae tilaukset</h3>
+            <h4>Hae tilaukset</h4>
         </div>
     </div>
 }else if (!hasOrders)
@@ -14,23 +14,48 @@
     </div>
 }else if (orders is not null)
 {
-    @foreach (var order in orders)
-    {
-        <button>
-            @order.Id
-            @order.CreatedAt.ToString("g")
-        </button>
+    <div> <!-- 4. Määrä + järjestysnapit -->
         <div>
-            @foreach (var item in order.OrderItems)
-            {
-                <div>
-                    @item.Article.Name
-                    kpl @item.Quantity
-                    @item.Price
-                </div>                      
-            }
+            Tilausten määrä: @customer?.Orders?.Count()
         </div>
-    }
+        <div>
+            <button @onclick="OrderByNew">Uusimmat</button>
+            <button @onclick="OrderByOld">Vanhimmat</button>
+        </div>
+    </div>
+    <div> <!-- 4. Lista -->
+        @foreach (var order in orders)
+        {
+            <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(order.Id)" aria-expanded="false" aria-controls="collapse@(order.Id)">
+                @order.Id
+                @order.CreatedAt.ToString("g")
+            </button>
+            <div class="collapse" id="collapse@(order.Id)">                    
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tuote:</th>
+                            <th>Kappalemäärä:</th>
+                            <th>Hinta:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <tr>
+                                <td>@item.Article?.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Price</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div>
+                    Yhteensä: @order.OrderItems.Sum(p => p.Price)
+                </div>
+            </div>
+        }
+    </div>   
 }
 
 @code {
@@ -41,9 +66,31 @@
     private bool hasOrders { get; set; }
 
     private List<FullOrdersModel>? orders = null;
+    private bool sortedNew;
 
     private async Task GetOrders()
     {
-        orders = await ordersData.GetOrdersByList(customer!.Orders!);    
+        orders = await ordersData.GetOrdersByList(customer!.Orders!);
+        // Reverse the list to get the newest entries on top
+        orders.Reverse();
+        sortedNew = true;
+    }
+
+    private void OrderByNew()
+    {
+        if (!sortedNew)
+        {
+            orders!.Reverse();
+            sortedNew = !sortedNew;
+        }
+    }
+
+    private void OrderByOld()
+    {
+        if (sortedNew) 
+        {
+            orders!.Reverse();
+            sortedNew = !sortedNew;
+        }
     }
 }
