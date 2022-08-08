@@ -1,0 +1,125 @@
+﻿@page "/Customers"
+@inject ICustomersData customersData
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navMngr
+
+<div>
+    <h1>Hae asiakkaita</h1>
+    <div>
+        <div>
+            <input
+                type="text"
+                placeholder="Hae..."
+                aria-label="Hakukenttä"
+                @oninput="((i) => SearchHandler((string)i.Value!))"
+            />
+        </div>
+        <div>
+            <ul class="list-group list-group-horizontal">
+                @foreach (var letter in alphabet)
+                {
+                    <li class="list-group-item" @onclick="(() => AlphabetHandler(letter))">
+                        @letter
+                    </li>
+                }
+            </ul>   
+        </div>
+    </div>
+    <div>
+        @if (customers is not null && isFiltered)
+        {
+            <div>@customers.Count()</div>
+            <div>
+                <ul>
+                    <Virtualize Items="@customers" Context="c" OverscanCount="20">
+                        <li @onclick="(() => GoToCustomerPage(c))">
+                            @c.Name
+                        </li>
+                    </Virtualize>
+                </ul> 
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string searchText = "";
+    private string chosenAlphabet = "";
+    private bool isFiltered = false;
+    private char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".ToCharArray();
+
+    private List<CustomersModel>? customers;
+
+    //protected async override Task OnInitializedAsync()
+    //{
+
+    //}
+
+    protected async override Task OnAfterRenderAsync(bool firstReload)
+    {
+        if (firstReload)
+        {
+            await GetFilterState();
+            await FilterCustomers();
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetFilterState()
+    {
+        var results = await sessionStorage.GetAsync<string>(nameof(searchText));
+        searchText = results.Success && results.Value is not null ? results.Value : "";
+
+        results = await sessionStorage.GetAsync<string>(nameof(chosenAlphabet));
+        chosenAlphabet = results.Success && results.Value is not null ? results.Value : "";
+    }
+
+    private async Task SaveFilterState()
+    {
+        await sessionStorage.SetAsync(nameof(searchText), searchText);
+        await sessionStorage.SetAsync(nameof(chosenAlphabet), chosenAlphabet);
+    }
+
+    private async Task SearchHandler(string text)
+    {
+        searchText = text;
+        chosenAlphabet = "";
+        await FilterCustomers();
+    }
+
+    private async Task AlphabetHandler(char letter)
+    {    
+        chosenAlphabet = letter.ToString();
+        searchText = "";
+        await FilterCustomers();
+    }
+
+    private async Task FilterCustomers()
+    {
+        var filtered = await customersData.GetAllCustomerNames();
+
+        if (!string.IsNullOrWhiteSpace(chosenAlphabet))
+        {
+            filtered = filtered.Where(a => a.Name!.StartsWith(chosenAlphabet, StringComparison.CurrentCultureIgnoreCase));
+            isFiltered = true;
+        }
+        else if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+            isFiltered = true;
+        }
+        else
+        {
+            isFiltered = false;
+        }
+
+        customers = filtered.ToList();
+
+        await SaveFilterState();
+    }
+
+    private void GoToCustomerPage(CustomersModel customer)
+    {
+        navMngr.NavigateTo($"/CustomerInfo/{customer.Id}");
+    }
+}

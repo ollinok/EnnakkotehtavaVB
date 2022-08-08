@@ -1,0 +1,95 @@
+﻿@page "/CustomerInfo/{Id}"
+@inject ICustomersData customersData
+@inject IOrdersData ordersData
+@inject NavigationManager navMngr
+
+@using VitabalansApp.Pages.Components
+
+
+@if (customer is not null)
+{
+    <div> <!-- Koko sivu-->
+        <div> <!-- 2. Yläpalkki -->
+            <div> <!-- 3. Nimi -->
+                <h2>@customer.Name</h2>
+            </div>
+            <div> <!-- 3. Napit -->
+                <div>
+                    Muokkaa
+                </div>
+                <div @onclick="GoToCustomersPage">
+                    Takaisin
+                </div>
+            </div>
+        </div>
+        <div> <!-- 2. Infoalue -->
+            <div> <!-- 3. Kuva/Google Maps -->
+
+            </div>
+            <div> <!-- 3. Yhteystiedot -->
+                <div>
+                    @customer.Address?.Split(',')[0]
+                    @customer.Address?.Split(',')[1]
+                </div>
+                <div>
+                    @customer.Email
+                </div>
+            </div>
+            <div> <!-- 3. Hintaryhmä -->
+                <div>
+                    Hintaryhmä
+                </div>
+                <div>
+                    Symboli
+                </div>
+                <div>
+                    @customer.PriceGroup?.Name
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        
+        <div> <!-- 2. Tilausalue -->
+            <div> <!-- 3. Tilausyläpalkki -->
+                <div>
+                    <h3>Tilaukset</h3>
+                </div>
+                <div> <!-- 4. Määrä + järjestysnapit -->
+                    <div>
+                        Tilausten määrä: @customer?.Orders?.Count()
+                    </div>
+                    <div>
+                        Uusimmat, Vanhimmat
+                    </div>
+                </div>
+            </div>
+            <div> <!-- 3. Tilausluettelo-->
+                <CascadingValue Value="customer" Name="Customer">
+                    <CascadingValue Value="hasOrders" Name="HasOrders">
+                        <CustomerOrderList />
+                    </CascadingValue>
+                </CascadingValue>
+            </div>
+        </div>      
+    </div>
+}else
+{
+    <div>No customer found with the ID of @Id</div>
+}
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    private bool hasOrders;
+    private FullCustomersModel? customer;
+
+    protected async override Task OnInitializedAsync()
+    {
+        customer = await customersData.GetCustomerInfo(int.Parse(Id!));
+        hasOrders = customer?.Orders?.Count() != 0;
+    }
+
+    private void GoToCustomersPage() => navMngr.NavigateTo("/Customers");
+}

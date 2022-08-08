@@ -44,4 +44,54 @@ public class SqlAccess : ISqlAccess
         var rows = await connection.QueryAsync(sqlProcedure, func, parameters, splitOn: splitCol);
         return rows;
     }
+
+    // Task specific methods
+    public async Task<FullCustomersModel> LoadCustomerInfo(string sql, object param, string split, string connId = "default")
+    {
+        using IDbConnection conn = new MySqlConnection(_config.GetConnectionString(connId));
+
+        FullCustomersModel? customer = null;
+        IEnumerable<OrdersModel>? orders = null;
+
+        using (var lists = await conn.QueryMultipleAsync(sql, param))
+        {
+            customer = lists.Read<FullCustomersModel, PriceGroupsModel, FullCustomersModel>(
+                (customer, pGroup) =>
+                {
+                    customer.PriceGroup = pGroup;
+                    return customer;
+                }, splitOn: split).Single();
+            orders = lists.Read<OrdersModel>();
+        }
+
+        customer.Orders = orders;
+        return customer;
+    }
+
+    public async Task<List<FullOrdersModel>> LoadManyOrderDetails(string sql, object param, string split, string connId = "default")
+    {
+        using IDbConnection conn = new MySqlConnection(_config.GetConnectionString(connId));
+
+        FullOrdersModel? order = null;
+        List<FullOrdersModel>? finalOrders = null;
+        IEnumerable<FullOrderItemsModel>? items = null;
+
+        using (var lists = await conn.QueryMultipleAsync(sql, param))
+        {
+            while (!lists.IsConsumed)
+            {
+                order = lists.Read<FullOrdersModel>().Single();
+                items = lists.Read<FullOrderItemsModel, ArticlesModel, FullOrderItemsModel>(
+                    (orderI, article) =>
+                    {
+                        orderI.Article = article;
+                        return orderI;
+                    }, splitOn: split);
+                order.OrderItems = items;
+                (finalOrders ??= new()).Add(order);
+            }
+        }
+
+        return finalOrders;
+    }
 }

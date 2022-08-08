@@ -1,35 +1,47 @@
 ﻿@page "/Articles"
 @inject IArticlesData articlesData
-@using DataAccess.Models.HelperModels
 @using VitabalansApp.Pages.Components;
 
-<h1>Myyntiartikkelit</h1>
+<div>
+    <div>
+        <h1>Myyntiartikkelit</h1>
+        <div>
+            <input
+                type="text"
+                placeholder="Hae..."
+                aria-label="Hakukenttä"
+                @oninput="((i) => SearchHandler((string)i.Value!))"
+            />
+        </div>
+        <div>
+            @if (articles is not null && articles.Count() <= 10)
+            {
+                foreach(var article in articles)
+                {
+                    <div>
+                        <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                    </div>
+                }
+            }
+    @*        else if (articles?.Count() > 10)
+            {
+                <div>
+                    Tarkenna hakua.
+                </div>
+            }*@
+        </div>
+    </div>
 
-<input
-    type="text"
-    placeholder="Hae..."
-    aria-label="Hakukenttä"
-    @oninput="((i) => SearchHandler((string)i.Value!))"
-    />
-<div>
-    @if (articles is not null && articles.Count() < 10)
-    {
-        foreach(var article in articles)
+    <div>
+        @if (chosenArticle is not null)
         {
-            <div>
-                <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
-            </div>
+            <CascadingValue Value="chosenArticle" Name="ChosenArticle">
+                <Article CloseComponent="@CloseArticleInfo"/>
+            </CascadingValue>
         }
-    }
+    </div>
 </div>
-<div>
-    @if (chosenArticle is not null)
-    {
-        <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-            <Article CloseComponent="@CloseArticleInfo"/>
-        </CascadingValue>
-    }
-</div>
+
 
 
 @code {
@@ -44,7 +56,7 @@
 
     private async Task FilterArticles()
     {
-        var filtered = await articlesData.GetArticleNames();
+        var filtered = await articlesData.GetAllArticleNames();
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
