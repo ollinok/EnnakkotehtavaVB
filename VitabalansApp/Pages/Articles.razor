@@ -12,6 +12,17 @@
                 aria-label="Hakukenttä"
                 @oninput="((i) => SearchHandler((string)i.Value!))"
             />
+            @if (namesOnly is not null && namesOnly.Count() > 1 && searchText != "")
+            {
+                <div class="position-absolute">
+                    <ul>
+                        @foreach (var name in namesOnly)
+                        {
+                            <li @onclick="() => SearchHandler(name)">@name</li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
         <div>
             @if (articles is not null && articles.Count() <= 10)
@@ -23,12 +34,6 @@
                     </div>
                 }
             }
-    @*        else if (articles?.Count() > 10)
-            {
-                <div>
-                    Tarkenna hakua.
-                </div>
-            }*@
         </div>
     </div>
 
@@ -48,6 +53,7 @@
     private string searchText = "";
     private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
+    private IEnumerable<string>? namesOnly;
 
     //protected async override Task OnInitializedAsync()
     //{
@@ -57,6 +63,7 @@
     private async Task FilterArticles()
     {
         var filtered = await articlesData.GetAllArticleNames();
+        HashSet<string>? nameOnly = new HashSet<string>();
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
@@ -64,6 +71,11 @@
         }
 
         articles = filtered;
+        foreach (var item in filtered)
+        {
+            nameOnly.Add(item.Name!.Split(' ')[0]);
+        }
+        namesOnly = nameOnly.Take(10);
     }
 
     private async Task SearchHandler(string text)
