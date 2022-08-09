@@ -1,33 +1,37 @@
-﻿<div>
-    <div>
+﻿<div class="container border border-2 pt-3 px-3 bg-light">
+    <div class="d-flex justify-content-between">
         <h2>@chosenArticle!.First().Name</h2>
-        <button @onclick="CloseArticle">Poistu</button>
+        <button type="button" class="btn-close" @onclick="CloseArticle" aria-label="Sulje"></button>
     </div>
-    <div>
+    <div class="fs-7">
         EAN: @chosenArticle!.First().Ean
     </div>
-    <div>
-        <img src="/images/pilleri.png" alt="lääke" width="300" height="300"/>
-        @(chosenArticle!.First().UpdatedAt != DateTime.MinValue ? chosenArticle!.First().UpdatedAt.ToString("d") : chosenArticle!.First().CreatedAt.ToString("d"))
+    <div class="d-flex flex-column flex-md-row justify-content-between">
+        <div>
+            <img src="/images/pilleri.png" class="border border-1" alt="lääke" width="200" height="200"/>
+        </div>
+        <div class="fst-italic align-self-md-end align">
+            Päivitetty: @(chosenArticle!.First().UpdatedAt != DateTime.MinValue ? chosenArticle!.First().UpdatedAt.ToString("d") : chosenArticle!.First().CreatedAt.ToString("d"))
+        </div>
     </div>
     <hr />
     <div>
         <h3>Hinnasto</h3>
-        <table>
+        <table class="table table-hover table-bordered">
             <thead>
                 <tr>
-                    <th>Luokka</th>
-                    <th>Hinta</th>
-                    <th>Päiväys</th>
+                    <th scope="col">Luokka</th>
+                    <th scope="col" class="text-end">Hinta</th>
+                    <th scope="col" class="text-end">Päiväys</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var row in chosenArticle!)
                 {
                     <tr>
-                        <td>@row.PriceGroup?.Name</td>
-                        <td>@(row.Price?.Price is not null ? row.Price.Price : "-")</td>
-                        <td>@(row.Price?.UpdatedAt != DateTime.MinValue ? row.Price?.UpdatedAt.ToString("d") : row.Price?.CreatedAt.ToString("d"))</td>
+                        <th scope="row">@row.PriceGroup?.Name</th>
+                        <td class="text-end">@(row.Price?.Price is not null ? $"{row.Price.Price} €" : "-")</td>
+                        <td class="text-end">@(row.Price?.UpdatedAt != DateTime.MinValue ? row.Price?.UpdatedAt.ToString("d") : row.Price?.CreatedAt.ToString("d"))</td>
                     </tr>    
                 }        
             </tbody>
