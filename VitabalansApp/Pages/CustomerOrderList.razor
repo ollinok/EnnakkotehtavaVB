@@ -43,7 +43,7 @@
                         @foreach (var item in order.OrderItems)
                         {
                             <tr>
-                                <td>@item.Article?.Name</td>
+                                <td>@(item.Article?.Name ?? "UNKNOWN ITEM")</td>
                                 <td>@item.Quantity</td>
                                 <td>@item.Price</td>
                             </tr>
