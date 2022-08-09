@@ -2,48 +2,52 @@
 @inject IArticlesData articlesData
 @using VitabalansApp.Pages.Components;
 
-<div>
-    <div>
-        <h1>Myyntiartikkelit</h1>
-        <div>
-            <input
-                type="text"
-                placeholder="Hae..."
-                aria-label="Hakukenttä"
-                @oninput="((i) => SearchHandler((string)i.Value!))"
-            />
-            @if (namesOnly is not null && namesOnly.Count() > 1 && searchText != "")
-            {
-                <div class="position-absolute">
-                    <ul>
-                        @foreach (var name in namesOnly)
-                        {
-                            <li @onclick="() => SearchHandler(name)">@name</li>
-                        }
-                    </ul>
-                </div>
-            }
-        </div>
-        <div>
-            @if (articles is not null && articles.Count() <= 10)
-            {
-                foreach(var article in articles)
+<div class="container-fluid">
+    <div class="row gx-lg-4">
+        <div class="col-lg-6">
+            <h1>Myyntiartikkelit</h1>
+            <div class="mb-2">
+                <input
+                    type="text"
+                    placeholder="Hae..."
+                    aria-label="Hakukenttä"
+                    @oninput="((i) => SearchHandler((string)i.Value!))"
+                />
+                @if (namesOnly is not null && namesOnly.Count() > 1 && searchText != "")
                 {
-                    <div>
-                        <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                    <div class="position-absolute">
+                        <ul>
+                            @foreach (var name in namesOnly)
+                            {
+                                <li @onclick="() => SearchHandler(name)">@name</li>
+                            }
+                        </ul>
                     </div>
                 }
+            </div> 
+                @if (articles is not null && articles.Count() <= 10)
+                {
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            @foreach(var article in articles)
+                            {
+                                <li class="fw-bold list-group-item pb-3 pt-3 border-1 border-secondary" @onclick="(() => OpenArticleInfo(article))">
+                                    @article.Name
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+        </div>
+
+        <div class="col-lg-6">
+            @if (chosenArticle is not null)
+            {
+                <CascadingValue Value="chosenArticle" Name="ChosenArticle">
+                    <Article CloseComponent="@CloseArticleInfo"/>
+                </CascadingValue>
             }
         </div>
-    </div>
-
-    <div>
-        @if (chosenArticle is not null)
-        {
-            <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-                <Article CloseComponent="@CloseArticleInfo"/>
-            </CascadingValue>
-        }
     </div>
 </div>
 
