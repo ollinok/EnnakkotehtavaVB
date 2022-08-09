@@ -1,61 +1,91 @@
 ﻿@page "/Testisivu"
-@using DataAccess.Models.HelperModels
 @inject IArticlesData articlesData
+@using VitabalansApp.Pages.Components;
 
-<h3>Testisivu</h3>
-
-<div>
-    <input
-        type="text"
-        placeholder="Hae..."
-        aria-label="Hakukenttä"
-        @oninput="((i) => SearchHandler((string)i.Value!))"
-    />
-    @if (namesOnly is not null && namesOnly.Count() > 1)
-    {
-        <div class="position-absolute">
-            <ul>
-                @foreach (var name in namesOnly)
+<div class="container-fluid">
+    <div class="row gx-lg-4">
+        <div class="col-lg-6 mb-2">
+            <h1>Myyntiartikkelit</h1>
+            <div class="mb-2 d-inline">
+                <CascadingValue Value="namesOnly" Name="ListOfItems">
+                    <SearchAutoComplete FilterResults="(s) => FilterArticles(s)"/>
+                </CascadingValue>          
+            </div> 
+                @if (articles is not null && articles.Count() <= 10)
                 {
-                    <li>@name</li>     
+                    <div class="card mt-2">
+                        <ul class="list-group list-group-flush">
+                            @foreach(var article in articles)
+                            {
+                                <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
+                                    <a href="Articles/@GetHref()" class="text-decoration-none text-black d-block p-3 vb-hover-item">@article.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
-            </ul>
         </div>
-    }
-</div>
-<div>
-    sdasdasdasd
+        <div class="col-lg-6" id="article-info">
+            @if (chosenArticle is not null)
+            {
+                <CascadingValue Value="chosenArticle" Name="ChosenArticle">
+                    <Article CloseComponent="@CloseArticleInfo"/>
+                </CascadingValue>
+            }
+        </div>
+        <AnchorNavigation />
+    </div>
 </div>
 
 
 @code {
     private string searchText = "";
+    private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
-
     private IEnumerable<string>? namesOnly;
 
-    private async Task SearchHandler(string text)
-    {
-        searchText = text;
-        await FilterArticles();
-    }
+    //protected async override Task OnInitializedAsync()
+    //{
 
-    private async Task FilterArticles()
+    //}
+
+    private async Task FilterArticles(string s)
     {
         var filtered = await articlesData.GetAllArticleNames();
         HashSet<string>? nameOnly = new HashSet<string>();
 
-        if (!string.IsNullOrWhiteSpace(searchText))
+        if (!string.IsNullOrWhiteSpace(s))
         {
-            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+            filtered = filtered.Where(a => a.Name!.StartsWith(s, StringComparison.CurrentCultureIgnoreCase));
         }
 
         articles = filtered;
-
         foreach (var item in filtered)
         {
-            nameOnly.Add(item.Name.Split(' ')[0]);
+            nameOnly.Add(item.Name!.Split(' ')[0]);
         }
         namesOnly = nameOnly.Take(10);
+    }
+
+    //private async Task SearchHandler(string text)
+    //{
+    //    searchText = text;
+    //    await FilterArticles();
+    //}
+
+    private async Task OpenArticleInfo(ArticlesModel article)
+    {
+        chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
+    }
+
+    private void CloseArticleInfo() => chosenArticle = null;
+
+    private string GetHref() => "#article-info";
+
+
+
+    private void BrowseSuggestions(KeyboardEventArgs e)
+    {
+        Console.WriteLine(e.Code);
     }
 }
