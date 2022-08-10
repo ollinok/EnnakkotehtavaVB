@@ -1,5 +1,20 @@
 ﻿@page "/Testisivu"
-<div class="container border-3 border-dark">
+<div class="position-relative">
+    <VitabalansApp.Pages.Components.NewArticleForm>
+
+    </VitabalansApp.Pages.Components.NewArticleForm>
+</div>
+
+
+<div>
+    loloololloo :D:DD:D
+    asdasdasdasdasdasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasas
+</div>
+
+
+
+
+@*<div class="container border-3 border-dark">
     <EditForm Model="article" OnValidSubmit="OpenPricesForm">
         <InputText id="title" @bind-Value="article.Title" />
         <InputNumber id="mg" @bind-Value="article.Mg" />
@@ -9,26 +24,26 @@
         <ValidationSummary />
         <button type="submit">Luo</button>
     </EditForm>
-</div>
+</div>*@
 
 @code {
-    private FullArticlesModel fullArticle = new FullArticlesModel();
-    private NewArticleModel article = new NewArticleModel();
+    //private FullArticlesModel fullArticle = new FullArticlesModel();
+    //private NewArticleModel article = new NewArticleModel();
 
-    private void BuildFullName()
-    {
-        string fullName = "";
-        string title = article.Title!;
-        title = char.ToUpper(title[0]) + title.Substring(1).ToLower();
-        fullName += $"{title} ";
-        fullName += $"{article.Mg} mg ";
-        fullName += $"{article.Amount} tabl.";
+    //private void BuildFullName()
+    //{
+    //    string fullName = "";
+    //    string title = article.Title!;
+    //    title = char.ToUpper(title[0]) + title.Substring(1).ToLower();
+    //    fullName += $"{title} ";
+    //    fullName += $"{article.Mg} mg ";
+    //    fullName += $"{article.Amount} tabl.";
 
-        fullArticle.Name = fullName;
-    }
+    //    fullArticle.Name = fullName;
+    //}
 
-    private void OpenPricesForm()
-    {
-        BuildFullName();
-    }
+    //private void OpenPricesForm()
+    //{
+    //    BuildFullName();
+    //}
 }
