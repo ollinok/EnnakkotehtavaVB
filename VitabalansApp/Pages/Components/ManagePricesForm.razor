@@ -9,53 +9,47 @@
         <div>
             <h3 class="text-center">Muokkaa hintoja</h3>
         </div>
-        <div class="d-flex flex-wrap justify-content-between col-sm-10 col-12 align-self-center px-3 border border-1 border-secondary bg-gradient">
-            @foreach (var p in prices)
-            {
-                <EditForm class="row col-6 py-2" Model="p" OnValidSubmit="(() => SendPrice(p.PriceGroupId))">
-
-                    <label for="@($"group{p.PriceGroupId}")" class="col-form-label col-5 fs-7">@($"{p.PriceGroup.Name}:")</label>
-
-                    <div class="col-7">
-                        <InputNumber TValue="decimal?" class="form-control" id="@($"group{p.PriceGroupId}")" @bind-Value="p.Price" />
-                    </div>
-                </EditForm>
-            }
-
-           @* <EditForm Model="article" OnValidSubmit="OpenPricesForm">
-                <div class="py-2">
-                    <label for="nimi" class="form-label">Tuotteen nimi:</label>
-                    <InputText class="form-control" id="nimi" placeholder="Nimi" @bind-Value="article.Title" title="Tuotteen nimi" />
-                </div>
-                <div class="py-2">
-                    <label for="mg" class="form-label">Annoksen suuruus:</label>
-                    <InputNumber class="form-control" id="mg" @bind-Value="article.Mg" title="Annoksen suuruus milligrammoissa"/>
-                </div>
-                <div class="py-2">
-                    <label for="amount" class="form-label">Pakkauksen tuotemäärä:</label>
-                    <InputNumber class="form-control" id="amount" @bind-Value="article.Amount" title="Pakkauksen sisältämä tuotteen kappalemäärä"/>
-                </div>
-                <div class="py-2">
-                    <label for="ean" class="form-label">EAN-13-viivakoodi:</label>
-                    <InputText class="form-control" id="ean" placeholder="EAN-koodi" @bind-Value="article.Ean" title="EAN-13-standardin mukainen koodi"/>
-                </div>
+        <div class="col-sm-10 col-12 align-self-center px-3 py-3 border border-1 border-secondary bg-gradient">
+            <EditForm class="" Model="priceModel" OnValidSubmit="(() => SendPrices())">
+                @foreach (var p in prices)
+                {
+                    <div class="d-flex justify-content-center py-1">
+                        <div class="col-4">
+                            <label for="@($"group{p.PriceGroupId}")" class="col-form-label">@($"{p.PriceGroup!.Name}:")</label>
+                        </div>
+                        <div class="input-group" style="max-width:150px;">
+                            <InputNumber TValue="decimal" 
+                                class="form-control"
+                                id="@($"group{p.PriceGroupId}")"
+                                @bind-Value="p.Price"
+                                aria-describedby="@($"addon{p.PriceGroupId}")"
+                            />
+                            <span class="input-group-text" id="@($"addon{p.PriceGroupId}")">€</span>
+                        </div>                
+                    </div>  
+                }
                 <DataAnnotationsValidator />
+                <ValidationSummary />
                 <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
                     <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
                     <button type="submit" class="btn btn-success">Luo</button>
                 </div>
-                <ValidationMessage For="() => article.Title" />
-            </EditForm>*@
+            </EditForm>
         </div>
     </div> 
 </div>
 @code {
     List<FullPricesModel>? prices;
-    //PricesModel price = new PricesModel();
+    PricesModel priceModel = new PricesModel();
     IEnumerable<PriceGroupsModel>? priceGroups;
 
     [CascadingParameter(Name = "ArticleId")]
     private string? articleId { get; set; }
+
+    [Parameter]
+    public EventCallback CancelProcess { get; set; }
+
+    private bool isNewArticle;
 
     protected async override Task OnInitializedAsync()
     {
@@ -65,25 +59,23 @@
 
         if (prices.Count() == 0)
         {
+            isNewArticle = true;
             foreach (var pg in priceGroups)
             {
                 prices.Add(new FullPricesModel() { PriceGroupId = pg.Id, ArticleId = aId, PriceGroup = pg });
-
             }
         }
-        //price.ArticleId = int.Parse(articleId!);
     }
 
-    private async void SendPrice(int priceGroupId)
+    private async void SendPrices()
     {
-        //price.PriceGroupId = priceGroupId;
-
+        // TODO Confirmation
+        await pricesData.CreatePricesForArticle(prices);
     }
-
-
 
     private void CloseForm()
     {
-        
-    }
+        // TODO Confirmation
+        CancelProcess.InvokeAsync();  
+    } 
 }

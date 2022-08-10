@@ -35,9 +35,16 @@ public class ArticlesData : IArticlesData
 
     public async Task<string> CreateNewArticle(ArticlesModel article)
     {
-        string sql = $@"insert into articles (name, ean, created_at) values (@Name, @Ean, CURRENT_TIMESTAMP);
+        string sql = @"insert into articles (name, ean, created_at) values (@Name, @Ean, CURRENT_TIMESTAMP);
                         select last_insert_id();";
         return await _db.WriteSqlDataReturnId(sql, new { Name = article.Name, Ean = article.Ean });
+    }
+
+    public async Task DeleteArticle(int id)
+    {
+        string sql = @"delete from articles where id = @Id";
+
+        await _db.WriteSqlData(sql, new { Id = id });
     }
 
     public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id)
