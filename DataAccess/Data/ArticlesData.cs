@@ -33,9 +33,11 @@ public class ArticlesData : IArticlesData
         return article.FirstOrDefault();
     }
 
-    public async Task<ArticlesModel> CreateNewArticle()
+    public async Task<string> CreateNewArticle(ArticlesModel article)
     {
-        return null;
+        string sql = $@"insert into articles (name, ean, created_at) values (@Name, @Ean, CURRENT_TIMESTAMP);
+                        select last_insert_id();";
+        return await _db.WriteSqlDataReturnId(sql, new { Name = article.Name, Ean = article.Ean });
     }
 
     public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id)
