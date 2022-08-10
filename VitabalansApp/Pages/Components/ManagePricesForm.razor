@@ -1,5 +1,6 @@
 ﻿@inject IPriceGroupsData priceGData
 @inject IPricesData pricesData
+@inject IArticlesData articlesData
 
 <div class="container col-xxl-6 col-lg-8 col-sm-12 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
     <div class="d-flex flex-column py-3 px-1">
@@ -39,12 +40,12 @@
     </div> 
 </div>
 @code {
-    List<FullPricesModel>? prices;
+    List<FullPricesModel> prices = new List<FullPricesModel>();
     PricesModel priceModel = new PricesModel();
     IEnumerable<PriceGroupsModel>? priceGroups;
 
-    [CascadingParameter(Name = "ArticleId")]
-    private string? articleId { get; set; }
+    [CascadingParameter(Name = "Article")]
+    private ArticlesModel? article { get; set; }
 
     [Parameter]
     public EventCallback CancelProcess { get; set; }
@@ -53,24 +54,21 @@
 
     protected async override Task OnInitializedAsync()
     {
-        int aId = int.Parse(articleId!);
         priceGroups = await priceGData.GetAllPriceGroups();
-        prices = (await pricesData.GetAllPricesByArticleId(aId)).ToList();
 
-        if (prices.Count() == 0)
+        isNewArticle = true;
+        foreach (var pg in priceGroups)
         {
-            isNewArticle = true;
-            foreach (var pg in priceGroups)
-            {
-                prices.Add(new FullPricesModel() { PriceGroupId = pg.Id, ArticleId = aId, PriceGroup = pg });
-            }
+            prices.Add(new FullPricesModel() { PriceGroupId = pg.Id, PriceGroup = pg });
         }
     }
 
     private async void SendPrices()
     {
         // TODO Confirmation
-        await pricesData.CreatePricesForArticle(prices);
+        int articleId = int.Parse(await articlesData.CreateNewArticle(article));
+        await pricesData.CreatePricesForArticle(prices, articleId);
+        CloseForm();
     }
 
     private void CloseForm()
