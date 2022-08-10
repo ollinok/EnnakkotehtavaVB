@@ -27,7 +27,7 @@
                 <DataAnnotationsValidator />
                 @*<ValidationSummary />*@
                 <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
-                    <button type="button" class="btn btn-danger">Peruuta</button>
+                    <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
                     <button type="submit" class="btn btn-success">Luo</button>
                 </div>
                 <ValidationMessage For="() => article.Title" />
@@ -46,6 +46,9 @@
 @code {
     private FullArticlesModel fullArticle = new FullArticlesModel();
     private NewArticleModel article = new NewArticleModel();
+
+    [Parameter]
+    public EventCallback CloseComponent { get; set; }
 
     private void BuildFullName()
     {
@@ -68,6 +71,6 @@
 
     private void CloseForm()
     {
-
+        CloseComponent.InvokeAsync();
     }
 }

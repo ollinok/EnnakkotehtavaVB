@@ -7,10 +7,11 @@
     <div class="row gx-lg-4">
         <div class="col-lg-6 mb-2">
             <h1>Myyntiartikkelit</h1>
-            <div class="mb-2 d-inline">
+            <div class="mb-2 d-flex justify-content-between">
                 <CascadingValue Value="namesOnly" Name="ListOfItems">
                     <SearchAutoComplete FilterResults="(s) => FilterArticles(s)"/>
                 </CascadingValue>
+                <button type="button" class="btn btn-success mx-2" @onclick="OpenNewForm">Lisää uusi</button>
             </div> 
                 @if (articles is not null && articles.Count() <= 10)
                 {
@@ -30,21 +31,25 @@
             @if (chosenArticle is not null)
             {
                 <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-                    <Article CloseComponent="@CloseArticleInfo"/>
+                    <Article CloseComponent="CloseArticleInfo"/>
                 </CascadingValue>
             }
         </div>
         <AnchorNavigation />
     </div>
-    
 </div>
-<NewArticleForm />
+@if (newArticle)
+{
+    <NewArticleForm CloseComponent="CloseNewForm"/>    
+}
+
 
 
 @code {
     private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
     private IEnumerable<string>? namesOnly;
+    private bool newArticle;
 
     //protected async override Task OnInitializedAsync()
     //{
@@ -75,6 +80,8 @@
     }
 
     private void CloseArticleInfo() => chosenArticle = null;
+    private void CloseNewForm() => newArticle = false;
+    private void OpenNewForm() => newArticle = true;
 
     private string GetHref() => "#article-info";
 
