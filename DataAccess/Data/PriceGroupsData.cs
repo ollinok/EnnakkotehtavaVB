@@ -18,7 +18,7 @@ public class PriceGroupsData : IPriceGroupsData
         var results = _cache.Get<IEnumerable<PriceGroupsModel>>(cacheName);
         if (results == null)
         {
-            string sql = @"select * from price_groups order by name";
+            string sql = @"select * from price_groups";
             results = await _db.LoadSqlData<PriceGroupsModel, dynamic>(sql, new { });
 
             _cache.Set(cacheName, results, TimeSpan.FromMinutes(1));
