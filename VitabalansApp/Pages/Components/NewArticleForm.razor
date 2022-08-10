@@ -6,7 +6,7 @@
     <div class="container col-xxl-4 col-lg-6 col-sm-10 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
         <div class="d-flex flex-column py-3 px-1">
             <div class="d-flex justify-content-end">
-                <button type="button" class="btn-close" @onclick="CloseForm" aria-label="Sulje"></button>
+                <button type="button" class="btn-close" @onclick="CancelArticleCreation" aria-label="Sulje"></button>
             </div>
             <div>
                 <h3 class="text-center">Lisää uusi tuoteartikkeli</h3>
@@ -32,7 +32,7 @@
                     <DataAnnotationsValidator />
                     @*<ValidationSummary />*@
                     <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
-                        <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
+                        <button type="button" class="btn btn-danger" @onclick="CancelArticleCreation">Peruuta</button>
                         <button type="submit" class="btn btn-success">Luo</button>
                     </div>
                     <ValidationMessage For="() => article.Title" />
@@ -44,7 +44,7 @@
 else
 {
     <CascadingValue Value="newId" Name="ArticleId">
-        <ManagePricesForm />
+        <ManagePricesForm CancelProcess="CancelArticleCreation"/>
     </CascadingValue>
 }
 
@@ -81,12 +81,19 @@ else
 
     private async Task SendNewArticle()
     {
+        // TODO Confirmation
         BuildFullName();
         newId = await articlesData.CreateNewArticle(fullArticle);
     }
 
-    private void CloseForm()
+    private async Task CancelArticleCreation()
     {
-        CloseComponent.InvokeAsync();
+        if (newId is not null)
+        {
+            await articlesData.DeleteArticle(int.Parse(newId));
+        }
+        CloseForm();
     }
+
+    private void CloseForm() => CloseComponent.InvokeAsync();
 }

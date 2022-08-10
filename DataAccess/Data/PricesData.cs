@@ -42,4 +42,11 @@ public class PricesData : IPricesData
 
         await _db.WriteSqlData(sql, param);
     }
+
+    public async Task CreatePricesForArticle(List<FullPricesModel> prices)
+    {
+        string sql = @"insert into prices (price_group_id, article_id, price, created_at)
+                       values (@PriceGroupId, @ArticleId, @Price, CURRENT_TIMESTAMP)";
+        await _db.WriteSqlData(sql, prices);
+    }
 }

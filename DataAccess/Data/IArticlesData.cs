@@ -6,5 +6,6 @@
         Task<IEnumerable<ArticlesModel>> GetAllArticleNames();
         Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id);
         Task<string> CreateNewArticle(ArticlesModel article);
+        Task DeleteArticle(int id);
     }
 }
