@@ -29,6 +29,13 @@ public class SqlAccess : ISqlAccess
         await connection.ExecuteAsync(sqlProcedure, parameters);
     }
 
+    public async Task<string> WriteSqlDataReturnId<T>(string sql, T param, string connectionId = "default")
+    {
+        using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));
+
+        return await connection.QuerySingleAsync<string>(sql, param);
+    }
+
     public async Task<IEnumerable<T1>> LoadMultiMapSqlData<T1, T2, U>(string sqlProcedure, U parameters, Func<T1,T2,T1> func, string splitCol, string connectionId = "default")
     {
         using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId)); 

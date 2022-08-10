@@ -14,6 +14,9 @@ builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IArticlesData, ArticlesData>();
 builder.Services.AddSingleton<ICustomersData, CustomersData>();
 builder.Services.AddSingleton<IOrdersData, OrdersData>();
+builder.Services.AddSingleton<IPriceGroupsData, PriceGroupsData>();
+builder.Services.AddSingleton<IPricesData, PricesData>();
+
 
 var app = builder.Build();
 

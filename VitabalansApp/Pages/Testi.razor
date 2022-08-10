@@ -1,9 +1,9 @@
 ﻿@page "/Testisivu"
-<div class="position-relative">
-    <VitabalansApp.Pages.Components.NewArticleForm>
+@inject IArticlesData articlesData
 
-    </VitabalansApp.Pages.Components.NewArticleForm>
-</div>
+<VitabalansApp.Pages.Components.ManagePricesForm>
+
+</VitabalansApp.Pages.Components.ManagePricesForm>
 
 
 <div>
@@ -27,23 +27,5 @@
 </div>*@
 
 @code {
-    //private FullArticlesModel fullArticle = new FullArticlesModel();
-    //private NewArticleModel article = new NewArticleModel();
 
-    //private void BuildFullName()
-    //{
-    //    string fullName = "";
-    //    string title = article.Title!;
-    //    title = char.ToUpper(title[0]) + title.Substring(1).ToLower();
-    //    fullName += $"{title} ";
-    //    fullName += $"{article.Mg} mg ";
-    //    fullName += $"{article.Amount} tabl.";
-
-    //    fullArticle.Name = fullName;
-    //}
-
-    //private void OpenPricesForm()
-    //{
-    //    BuildFullName();
-    //}
 }

@@ -1,54 +1,69 @@
-﻿<div class="container col-xxl-4 col-lg-6 col-sm-10 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
-    <div class="d-flex flex-column py-3 px-1">
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn-close" @onclick="CloseForm" aria-label="Sulje"></button>
-        </div>
-        <div>
-            <h3 class="text-center">Lisää uusi tuoteartikkeli</h3>
-        </div>
-        <div class="col-sm-9 col-12 align-self-center px-3 border border-1 border-secondary bg-gradient">
-            <EditForm Model="article" OnValidSubmit="OpenPricesForm">
-                <div class="py-2">
-                    <label for="nimi" class="form-label">Tuotteen nimi:</label>
-                    <InputText class="form-control" id="nimi" placeholder="Nimi" @bind-Value="article.Title" title="Tuotteen nimi" />
-                </div>
-                <div class="py-2">
-                    <label for="mg" class="form-label">Annoksen suuruus:</label>
-                    <InputNumber class="form-control" id="mg" @bind-Value="article.Mg" title="Annoksen suuruus milligrammoissa"/>
-                </div>
-                <div class="py-2">
-                    <label for="amount" class="form-label">Pakkauksen tuotemäärä:</label>
-                    <InputNumber class="form-control" id="amount" @bind-Value="article.Amount" title="Pakkauksen sisältämä tuotteen kappalemäärä"/>
-                </div>
-                <div class="py-2">
-                    <label for="ean" class="form-label">EAN-13-viivakoodi:</label>
-                    <InputText class="form-control" id="ean" placeholder="EAN-koodi" @bind-Value="article.Ean" title="EAN-13-standardin mukainen koodi"/>
-                </div>
-                <DataAnnotationsValidator />
-                @*<ValidationSummary />*@
-                <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
-                    <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
-                    <button type="submit" class="btn btn-success">Luo</button>
-                </div>
-                <ValidationMessage For="() => article.Title" />
-            </EditForm>
-        </div>
-    
-        <!--
-            Tähän Hintojen muokkaus -komponentti 
-            ----------------------------
-            Se ottaa FullArticlesModel vastaan
-            Piilota tuo ylempi formi? Napilla pääsee takasin muokkaamaan sitä.
-        -->
-    </div> 
-</div>
+﻿@inject IArticlesData articlesData
+@using Models;
+
+@if (newId is null)
+{
+    <div class="container col-xxl-4 col-lg-6 col-sm-10 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
+        <div class="d-flex flex-column py-3 px-1">
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn-close" @onclick="CloseForm" aria-label="Sulje"></button>
+            </div>
+            <div>
+                <h3 class="text-center">Lisää uusi tuoteartikkeli</h3>
+            </div>
+            <div class="col-sm-9 col-12 align-self-center px-3 border border-1 border-secondary bg-gradient">
+                <EditForm Model="article" OnValidSubmit="SendNewArticle">
+                    <div class="py-2">
+                        <label for="nimi" class="form-label">Tuotteen nimi:</label>
+                        <InputText class="form-control" id="nimi" placeholder="Nimi" @bind-Value="article.Title" title="Tuotteen nimi" />
+                    </div>
+                    <div class="py-2">
+                        <label for="mg" class="form-label">Annoksen suuruus:</label>
+                        <InputNumber class="form-control" id="mg" @bind-Value="article.Mg" title="Annoksen suuruus milligrammoissa"/>
+                    </div>
+                    <div class="py-2">
+                        <label for="amount" class="form-label">Pakkauksen tuotemäärä:</label>
+                        <InputNumber class="form-control" id="amount" @bind-Value="article.Amount" title="Pakkauksen sisältämä tuotteen kappalemäärä"/>
+                    </div>
+                    <div class="py-2">
+                        <label for="ean" class="form-label">EAN-13-viivakoodi:</label>
+                        <InputText class="form-control" id="ean" placeholder="EAN-koodi" @bind-Value="article.Ean" title="EAN-13-standardin mukainen koodi"/>
+                    </div>
+                    <DataAnnotationsValidator />
+                    @*<ValidationSummary />*@
+                    <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
+                        <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
+                        <button type="submit" class="btn btn-success">Luo</button>
+                    </div>
+                    <ValidationMessage For="() => article.Title" />
+                </EditForm>
+            </div>
+        </div> 
+    </div>
+}
+else
+{
+    <CascadingValue Value="newId" Name="ArticleId">
+        <ManagePricesForm />
+    </CascadingValue>
+}
+
+<!--
+    Tähän Hintojen muokkaus -komponentti 
+    ----------------------------
+    Se ottaa ArticlesModel vastaan
+    Piilota tuo ylempi formi
+    Napilla ei pääse takaisin muokkaamaan sitä. Laita varoitus?
+-->
 
 @code {
-    private FullArticlesModel fullArticle = new FullArticlesModel();
+    private ArticlesModel fullArticle = new ArticlesModel();
     private NewArticleModel article = new NewArticleModel();
 
     [Parameter]
     public EventCallback CloseComponent { get; set; }
+
+    private string? newId { get; set; }
 
     private void BuildFullName()
     {
@@ -64,9 +79,10 @@
         fullArticle.Ean = article.Ean;
     }
 
-    private void OpenPricesForm()
+    private async Task SendNewArticle()
     {
         BuildFullName();
+        newId = await articlesData.CreateNewArticle(fullArticle);
     }
 
     private void CloseForm()
