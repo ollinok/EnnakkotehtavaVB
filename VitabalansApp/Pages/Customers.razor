@@ -22,7 +22,7 @@
                 @foreach (var letter in alphabet)
                 {
                     <div class="px-1 vb-alphabet-font border-start border-end" @onclick="(() => AlphabetHandler(letter))">
-                        <button class="" style="border: none; background-color: #FFFFFF;">
+                        <button class="vb-btn-nostyling">
                             @letter
                         </button>
                     </div>
@@ -33,14 +33,15 @@
     <div>
         @if (customers is not null && isFiltered)
         {
-            <div class="mx-2">
-                <h2>A</h2>
+            <div class="mt-3">
+                <h2 class="ms-1">@char.ToUpper(searchText[0])</h2>
                 <ul class="d-xl-flex flex-wrap list-unstyled">
                     <Virtualize Items="@customers" Context="c" OverscanCount="20">
                         <li 
                             class="py-1 col-12 col-xl-4 col-xxl-3 list-unstyled"
                             @onclick="(() => GoToCustomerPage(c))">
-                            @c.Name
+                            <button type="button" class="p-1 vb-hover-item vb-btn-nostyling">@c.Name</button>
+                            
                         </li>
                     </Virtualize>
                 </ul> 
@@ -51,16 +52,9 @@
 
 @code {
     private string searchText = "";
-    private string chosenAlphabet = "";
     private bool isFiltered = false;
     private char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".ToCharArray();
-
     private List<CustomersModel>? customers;
-
-    //protected async override Task OnInitializedAsync()
-    //{
-
-    //}
 
     protected async override Task OnAfterRenderAsync(bool firstReload)
     {
@@ -76,28 +70,22 @@
     {
         var results = await sessionStorage.GetAsync<string>(nameof(searchText));
         searchText = results.Success && results.Value is not null ? results.Value : "";
-
-        results = await sessionStorage.GetAsync<string>(nameof(chosenAlphabet));
-        chosenAlphabet = results.Success && results.Value is not null ? results.Value : "";
     }
 
     private async Task SaveFilterState()
     {
         await sessionStorage.SetAsync(nameof(searchText), searchText);
-        await sessionStorage.SetAsync(nameof(chosenAlphabet), chosenAlphabet);
     }
 
     private async Task SearchHandler(string text)
     {
         searchText = text;
-        chosenAlphabet = "";
         await FilterCustomers();
     }
 
     private async Task AlphabetHandler(char letter)
     {    
-        chosenAlphabet = letter.ToString();
-        searchText = "";
+        searchText = letter.ToString();
         await FilterCustomers();
     }
 
@@ -105,12 +93,7 @@
     {
         var filtered = await customersData.GetAllCustomerNames();
 
-        if (!string.IsNullOrWhiteSpace(chosenAlphabet))
-        {
-            filtered = filtered.Where(a => a.Name!.StartsWith(chosenAlphabet, StringComparison.CurrentCultureIgnoreCase));
-            isFiltered = true;
-        }
-        else if (!string.IsNullOrWhiteSpace(searchText))
+        if (!string.IsNullOrWhiteSpace(searchText))
         {
             filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
             isFiltered = true;
@@ -121,7 +104,6 @@
         }
 
         customers = filtered.ToList();
-
         await SaveFilterState();
     }
 
