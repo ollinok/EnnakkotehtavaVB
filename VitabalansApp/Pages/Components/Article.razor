@@ -74,6 +74,10 @@
         };
     }
 
-    private void ClosePriceEdit() => articleInfo = null;
+    private void ClosePriceEdit()
+    {
+        articleInfo = null;
+        CloseArticle();
+    } 
     private void CloseArticle() => CloseComponent.InvokeAsync();
 }
