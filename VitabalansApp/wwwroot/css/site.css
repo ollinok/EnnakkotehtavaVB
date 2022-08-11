@@ -13,6 +13,9 @@ html, body {
 .vb-hover-item:hover {
     background-color: rgba(218,66,135,0.5);
 }
+.vb-hover-turq:hover {
+    background-color: rgba(0,159,147,0.5);
+}
 
 .vb-bg-turquoise {
     background-color: rgba(0,159,147,0.6);
