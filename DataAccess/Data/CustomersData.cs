@@ -29,12 +29,12 @@ public class CustomersData : ICustomersData
     public async Task<FullCustomersModel?> GetCustomerInfo(long id)
     {
         string sql = @"select customers.id, customers.name, customers.email, customers.address, customers.created_at CreatedAt, customers.updated_at UpdatedAt,
-                              price_groups.name
+                              price_groups.id, price_groups.name
                        from customers
                        left join price_groups on price_groups.id = customers.price_group_id
                        where customers.id = @Id;
                        select id, created_at CreatedAt, updated_at UpdatedAt from orders where customer_id = @Id";
-        string splitOn = "name";
+        string splitOn = "id";
 
         return await _db.LoadCustomerInfo(sql, new { Id = id }, splitOn);
     }
