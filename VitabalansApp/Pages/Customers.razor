@@ -36,14 +36,14 @@
             <div class="mt-3">
                 <h2 class="ms-1">@char.ToUpper(searchText[0])</h2>
                 <ul class="d-xl-flex flex-wrap list-unstyled">
-                    <Virtualize Items="@customers" Context="c" OverscanCount="20">
+                    @foreach (var customer in customers)
+                    {
                         <li 
                             class="py-1 col-12 col-xl-4 col-xxl-3 list-unstyled"
-                            @onclick="(() => GoToCustomerPage(c))">
-                            <button type="button" class="p-1 vb-hover-turq vb-btn-nostyling">@c.Name</button>
-                            
+                            @onclick="(() => GoToCustomerPage(customer))">
+                            <button type="button" class="p-1 vb-hover-turq vb-btn-nostyling">@customer.Name</button>    
                         </li>
-                    </Virtualize>
+                    }
                 </ul> 
             </div>
         }
