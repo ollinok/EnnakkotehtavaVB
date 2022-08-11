@@ -77,7 +77,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        customer = await customersData.GetCustomerInfo(int.Parse(Id!));
+        customer = await customersData.GetCustomerInfo(long.Parse(Id!));
         hasOrders = customer?.Orders?.Count() != 0;
     }
 

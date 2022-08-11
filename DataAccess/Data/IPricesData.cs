@@ -2,8 +2,8 @@
 
 public interface IPricesData
 {
-    Task CreatePrice(int articleId, PricesModel price);
-    Task CreatePricesForArticle(List<FullPricesModel> prices, int articleId);
-    Task<IEnumerable<FullPricesModel>> GetAllPricesByArticleId(int id);
+    Task CreatePrice(long articleId, PricesModel price);
+    Task CreatePricesForArticle(List<FullPricesModel> prices, long articleId);
+    Task<IEnumerable<FullPricesModel>> GetAllPricesByArticleId(long id);
     Task UpdatePricesForArticle(List<FullPricesModel> prices);
 }

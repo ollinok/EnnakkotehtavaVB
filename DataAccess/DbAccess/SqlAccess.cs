@@ -62,16 +62,27 @@ public class SqlAccess : ISqlAccess
 
         using (var lists = await conn.QueryMultipleAsync(sql, param))
         {
-            customer = lists.Read<FullCustomersModel, PriceGroupsModel, FullCustomersModel>(
+            try
+            {
+                customer = lists.Read<FullCustomersModel, PriceGroupsModel, FullCustomersModel>(
                 (customer, pGroup) =>
                 {
                     customer.PriceGroup = pGroup;
                     return customer;
                 }, splitOn: split).Single();
-            orders = lists.Read<OrdersModel>();
+                orders = lists.Read<OrdersModel>();
+                customer.Orders = orders;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine($"No customer found with ID {param}");
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine(ex);
+                Console.WriteLine("----------------------------------");
+            }  
         }
-
-        customer.Orders = orders;
+  
         return customer;
     }
 

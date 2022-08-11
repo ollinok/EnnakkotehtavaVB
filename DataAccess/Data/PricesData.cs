@@ -14,7 +14,7 @@ public class PricesData : IPricesData
         return await _db.LoadSqlData<PricesModel, dynamic>(sql, new { AId = id });
     }*/
 
-    public async Task<IEnumerable<FullPricesModel>> GetAllPricesByArticleId(int id)
+    public async Task<IEnumerable<FullPricesModel>> GetAllPricesByArticleId(long id)
     {
         string sql = @"select prices.id, prices.price_group_id PriceGroupId, prices.article_id ArticleId, prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,
                               price_groups.id, price_groups.name
@@ -30,7 +30,7 @@ public class PricesData : IPricesData
     }
 
     // Turha?
-    public async Task CreatePrice(int articleId, PricesModel price)
+    public async Task CreatePrice(long articleId, PricesModel price)
     {
         string sql = @"insert into prices (price_group_id, article_id, price, created_at)
                        values (@PgID, @AId, @Price, CURRENT_TIMESTAMP)";
@@ -44,7 +44,7 @@ public class PricesData : IPricesData
         await _db.WriteSqlData(sql, param);
     }
 
-    public async Task CreatePricesForArticle(List<FullPricesModel> prices, int articleId)
+    public async Task CreatePricesForArticle(List<FullPricesModel> prices, long articleId)
     {
         string sql = $@"insert into prices (price_group_id, article_id, price, created_at)
                        values (@PriceGroupId, {articleId}, @Price, CURRENT_TIMESTAMP)";
