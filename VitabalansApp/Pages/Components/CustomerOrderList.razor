@@ -2,58 +2,70 @@
 
 @if (hasOrders && orders is null)
 {
-    <div>
-        <div @onclick="GetOrders">
-            <h4>Hae tilaukset</h4>
+    <div class="position-relative border border-2 mb-2 vb-corder-box">
+        <div class="position-absolute border-dark top-50 start-50 translate-middle fs-4">
+            <button type="button" class="btn vb-bg-turquoise" @onclick="GetOrders">Hae tilaukset</button>
         </div>
     </div>
 }else if (!hasOrders)
 {
-    <div>
-        Asiakkaalla ei ole aikaisempia tilauksia.
+    <div class="position-relative border border-2 mb-2 vb-corder-box">
+        <div class="position-absolute border-dark top-50 start-50 translate-middle fst-italic fs-5 text-center">
+            Asiakkaalla ei ole aikaisempia tilauksia.
+        </div>
     </div>
 }else if (orders is not null)
 {
-    <div> <!-- 4. Määrä + järjestysnapit -->
-        <div>
+    <div class="row"> <!-- 4. Määrä + järjestysnapit -->
+        <div class="col-12 col-lg-6 align-self-center">
             Tilausten määrä: @customer?.Orders?.Count()
         </div>
-        <div>
-            <button @onclick="OrderByNew">Uusimmat</button>
-            <button @onclick="OrderByOld">Vanhimmat</button>
+        <div class="col-12 col-lg-6 d-flex justify-content-lg-end justify-content-center">
+            <button class="vb-btn-round vb-btn-round-left vb-hover-item" @onclick="OrderByNew">Uusimmat</button>
+            <button class="vb-btn-round vb-btn-round-right vb-hover-item" @onclick="OrderByOld">Vanhimmat</button>
         </div>
     </div>
-    <div> <!-- 4. Lista -->
+    <div class="row"> <!-- 4. Lista -->
         @foreach (var order in orders)
         {
-            <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(order.Id)" aria-expanded="false" aria-controls="collapse@(order.Id)">
-                @order.Id
-                @order.CreatedAt.ToString("g")
-            </button>
-            <div class="collapse" id="collapse@(order.Id)">                    
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tuote:</th>
-                            <th>Kappalemäärä:</th>
-                            <th>Hinta:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in order.OrderItems)
-                        {
+            <div class="col-12 col-xl-6 mt-2">
+                <div class="d-grid">
+                    <button 
+                        type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapse@(order.Id)" aria-expanded="false" aria-controls="collapse@(order.Id)"
+                        class="btn d-flex justify-content-between vb-bg-turquoise fs-4 py-3 px-3"
+                    >
+                        <span>@order.CreatedAt.ToString("g")</span>
+                        <span>ID @order.Id</span>
+                    </button>
+                </div>
+                <div class="collapse border border-2" id="collapse@(order.Id)">                    
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>@(item.Article?.Name ?? "UNKNOWN ITEM")</td>
-                                <td>@item.Quantity</td>
-                                <td>@item.Price</td>
+                                <th scope="col">Tuote:</th>
+                                <th scope="col" class="text-end">Kpl.:</th>
+                                <th scope="col" class="text-end">Hinta:</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-                <div>
-                    Yhteensä: @order.OrderItems.Sum(p => p.Price)
+                        </thead>
+                        <tbody>
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <tr>
+                                    <td class="col-6">@(item.Article?.Name ?? "UNKNOWN ITEM")</td>
+                                    <td class="col-3 text-end">@item.Quantity</td>
+                                    <td class="col-3 text-end">@item.Price €</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td colspan="2" class="text-end fw-bold">Yhteensä:</td>
+                                <td class="text-end fw-bold">@order.OrderItems.Sum(p => p.Price) €</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            
         }
     </div>   
 }

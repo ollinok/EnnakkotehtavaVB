@@ -11,7 +11,7 @@ html, body {
 }
 
 .vb-hover-item:hover {
-    background-color: rgba(0,159,147,0.5);
+    background-color: rgba(218,66,135,0.5);
 }
 
 .vb-bg-turquoise {
@@ -23,13 +23,39 @@ html, body {
 }
 
 .vb-alphabet-font {
-    font-size: calc(0.005rem + 1.3vw);
+    font-size: calc(0.005rem + 1.3vw) !important;
+}
+
+.vb-greek-font {
+    font-size: calc(2rem + 2vw) !important;
 }
 
 .vb-btn-nostyling {
     border: none;
     background-color: #FFFFFF;
 }
+
+.vb-btn-round {
+    /*display: block;*/
+    border-width: 1px;
+    width: 130px;
+}
+
+.vb-btn-round-left {
+    border-radius: 50px 0px 0px 50px;
+    padding: 3px 15px 3px 20px;
+}
+
+.vb-btn-round-right {
+    border-radius: 0px 50px 50px 0px;
+    padding: 3px 20px 3px 15px;
+}
+
+.vb-corder-box {
+    height: calc(60vh - 8rem);
+}
+
+
 
 
 h1:focus {
