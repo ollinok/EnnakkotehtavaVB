@@ -2,47 +2,51 @@
 @inject ICustomersData customersData
 @inject IOrdersData ordersData
 @inject NavigationManager navMngr
-
-@using VitabalansApp.Pages.Components
-
+@using VitabalansApp.Pages.Components;
 
 @if (customer is not null)
 {
-    <div> <!-- Koko sivu-->
-        <div> <!-- 2. Yläpalkki -->
-            <div> <!-- 3. Nimi -->
+    <div class="container-fluid"> <!-- Koko sivu-->
+        <div class="d-flex justify-content-between"> <!-- 2. Yläpalkki -->
+            <div class=""> <!-- 3. Nimi -->
                 <h2>@customer.Name</h2>
             </div>
-            <div> <!-- 3. Napit -->
-                <div>
-                    Muokkaa
-                </div>
-                <div @onclick="GoToCustomersPage">
-                    Takaisin
-                </div>
+            <div class="">
+                <button type="button" class="btn btn-close" @onclick="GoToCustomersPage"></button>
             </div>
         </div>
-        <div> <!-- 2. Infoalue -->
-            <div> <!-- 3. Kuva/Google Maps -->
-
+        <div class="row"> <!-- 2. Infoalue -->
+            <div class="col-12 col-lg-4"> <!-- 3. Kuva/Google Maps -->
+                <img 
+                    src="/images/apteekkik.jpg"
+                    alt="Apteekki"
+                    class="img-fluid border border-2 border-dark"
+                />
             </div>
-            <div> <!-- 3. Yhteystiedot -->
-                <div>
-                    @customer.Address?.Split(',')[0]
-                    @customer.Address?.Split(',')[1]
+            <div class="col-12 col-lg-4 d-flex flex-column justify-content-center my-2"> <!-- 3. Yhteystiedot -->
+                <div class="px-2 border border-1 bg-light">
+                    <div class="my-3 fs-5">
+                        <div>
+                            @customer.Address?.Split(',')[0]
+                        </div>
+                        <div>
+                            @customer.Address?.Split(',')[1]
+                        </div>
+                    </div>
+                    <div class="my-3">
+                        <a href="">@customer.Email</a>
+                    </div>
                 </div>
-                <div>
-                    @customer.Email
-                </div>
+                
             </div>
-            <div> <!-- 3. Hintaryhmä -->
-                <div>
+            <div class="col-12 col-lg-4 d-flex flex-column justify-content-between align-items-center"> <!-- 3. Hintaryhmä -->
+                <div class="fs-5">
                     Hintaryhmä
                 </div>
-                <div>
-                    Symboli
+                <div class="vb-greek-font border border-1 py-4 px-5 bg-light">
+                    @greek[customer.PriceGroup.Id - 1]
                 </div>
-                <div>
+                <div class="fs-5 text-decoration-underline">
                     @customer.PriceGroup?.Name
                 </div>
             </div>
@@ -55,20 +59,10 @@
                 <div>
                     <h3>Tilaukset</h3>
                 </div>
-                <div> <!-- 4. Määrä + järjestysnapit -->
-                    <div>
-                        Tilausten määrä: @customer?.Orders?.Count()
-                    </div>
-                    <div>
-                        Uusimmat, Vanhimmat
-                    </div>
-                </div>
             </div>
             <div> <!-- 3. Tilausluettelo-->
                 <CascadingValue Value="customer" Name="Customer">
-                    <CascadingValue Value="hasOrders" Name="HasOrders">
-                        <CustomerOrderList />
-                    </CascadingValue>
+                    <CustomerOrderList />
                 </CascadingValue>
             </div>
         </div>      
@@ -82,13 +76,12 @@
     [Parameter]
     public string? Id { get; set; }
 
-    private bool hasOrders;
     private FullCustomersModel? customer;
+    private char[] greek = "\u0391\u0392\u0393\u0394\u0395\u0396\u0397\u0398\u0399\u039A".ToCharArray();
 
     protected async override Task OnInitializedAsync()
     {
-        customer = await customersData.GetCustomerInfo(int.Parse(Id!));
-        hasOrders = customer?.Orders?.Count() != 0;
+        customer = await customersData.GetCustomerInfo(long.Parse(Id!));
     }
 
     private void GoToCustomersPage() => navMngr.NavigateTo("/Customers");

@@ -1,75 +1,86 @@
 ﻿@page "/Articles"
 @inject IArticlesData articlesData
+@using VitabalansApp.Pages.Components.Utility;
 @using VitabalansApp.Pages.Components;
 
-<div>
-    <div>
-        <h1>Myyntiartikkelit</h1>
-        <div>
-            <input
-                type="text"
-                placeholder="Hae..."
-                aria-label="Hakukenttä"
-                @oninput="((i) => SearchHandler((string)i.Value!))"
-            />
-        </div>
-        <div>
-            @if (articles is not null && articles.Count() <= 10)
-            {
-                foreach(var article in articles)
+<div class="container-fluid">
+    <div class="row gx-lg-4">
+        <div class="col-xl-6 mb-2">
+            <div class="d-flex justify-content-between">     
+                <div class="mb-2">
+                    <h1>Tuoteartikkelit</h1>
+                    <CascadingValue Value="namesOnly" Name="ListOfItems">
+                        <SearchAutoComplete FilterResults="(s) => FilterArticles(s)"/>
+                    </CascadingValue>
+                </div>
+                <div class="mt-1">
+                    <a href="Articles/@GetHrefNewArticle()">
+                         <button type="button" class="btn btn-success ms-3" @onclick="OpenNewForm">
+                             Lisää uusi
+                        </button>
+                    </a>
+                   
+                </div>
+            </div>
+                @if (articles is not null && articles.Count() <= 10)
                 {
-                    <div>
-                        <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
+                    <div class="card mt-2">
+                        <ul class="list-group list-group-flush">
+                            @foreach(var article in articles)
+                            {
+                                <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
+                                    <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-item">@article.Name</a>
+                                </li>
+                            }
+                        </ul>
                     </div>
                 }
-            }
-    @*        else if (articles?.Count() > 10)
-            {
-                <div>
-                    Tarkenna hakua.
-                </div>
-            }*@
         </div>
-    </div>
-
-    <div>
-        @if (chosenArticle is not null)
-        {
-            <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-                <Article CloseComponent="@CloseArticleInfo"/>
-            </CascadingValue>
-        }
+        <div class="col-xl-6" id="article-info">
+            @if (chosenArticle is not null)
+            {
+                <CascadingValue Value="chosenArticle" Name="ChosenArticle">
+                    <Article CloseComponent="CloseArticleInfo"/>
+                </CascadingValue>
+            }
+        </div>
+        
     </div>
 </div>
-
+@if (newArticle)
+{
+    <NewArticleForm CloseComponent="CloseNewForm"/>    
+}
+<AnchorNavigation />
 
 
 @code {
-    private string searchText = "";
     private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
+    private IEnumerable<string>? namesOnly;
+    private bool newArticle;
 
     //protected async override Task OnInitializedAsync()
     //{
 
     //}
 
-    private async Task FilterArticles()
+    private async Task FilterArticles(string s)
     {
         var filtered = await articlesData.GetAllArticleNames();
+        HashSet<string>? nameOnly = new HashSet<string>();
 
-        if (!string.IsNullOrWhiteSpace(searchText))
+        if (!string.IsNullOrWhiteSpace(s))
         {
-            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
+            filtered = filtered.Where(a => a.Name!.StartsWith(s, StringComparison.CurrentCultureIgnoreCase));
         }
 
         articles = filtered;
-    }
-
-    private async Task SearchHandler(string text)
-    {
-        searchText = text;
-        await FilterArticles();
+        foreach (var item in filtered)
+        {
+            nameOnly.Add(item.Name!.Split(' ')[0]);
+        }
+        namesOnly = nameOnly.Take(10);
     }
 
     private async Task OpenArticleInfo(ArticlesModel article)
@@ -78,5 +89,10 @@
     }
 
     private void CloseArticleInfo() => chosenArticle = null;
+    private void CloseNewForm() => newArticle = false;
+    private void OpenNewForm() => newArticle = true;
+
+    private string GetHrefArticle() => "#article-info";
+    private string GetHrefNewArticle() => "#new-article-popup";
 
 }

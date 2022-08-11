@@ -29,6 +29,13 @@ public class SqlAccess : ISqlAccess
         await connection.ExecuteAsync(sqlProcedure, parameters);
     }
 
+    public async Task<string> WriteSqlDataReturnId<T>(string sql, T param, string connectionId = "default")
+    {
+        using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));
+
+        return await connection.QuerySingleAsync<string>(sql, param);
+    }
+
     public async Task<IEnumerable<T1>> LoadMultiMapSqlData<T1, T2, U>(string sqlProcedure, U parameters, Func<T1,T2,T1> func, string splitCol, string connectionId = "default")
     {
         using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId)); 
@@ -55,16 +62,27 @@ public class SqlAccess : ISqlAccess
 
         using (var lists = await conn.QueryMultipleAsync(sql, param))
         {
-            customer = lists.Read<FullCustomersModel, PriceGroupsModel, FullCustomersModel>(
+            try
+            {
+                customer = lists.Read<FullCustomersModel, PriceGroupsModel, FullCustomersModel>(
                 (customer, pGroup) =>
                 {
                     customer.PriceGroup = pGroup;
                     return customer;
                 }, splitOn: split).Single();
-            orders = lists.Read<OrdersModel>();
+                orders = lists.Read<OrdersModel>();
+                customer.Orders = orders;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine($"No customer found with ID {param}");
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine(ex);
+                Console.WriteLine("----------------------------------");
+            }  
         }
-
-        customer.Orders = orders;
+  
         return customer;
     }
 

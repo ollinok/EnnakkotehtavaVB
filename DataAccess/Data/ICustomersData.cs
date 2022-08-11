@@ -3,5 +3,5 @@
 public interface ICustomersData
 {
     Task<IEnumerable<CustomersModel>> GetAllCustomerNames();
-    Task<FullCustomersModel?> GetCustomerInfo(int id);
+    Task<FullCustomersModel?> GetCustomerInfo(long id);
 }

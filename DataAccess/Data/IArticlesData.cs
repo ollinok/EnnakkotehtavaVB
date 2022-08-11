@@ -2,8 +2,10 @@
 {
     public interface IArticlesData
     {
-        Task<ArticlesModel?> GetArticle(int id);
+        Task<ArticlesModel?> GetArticle(long id);
         Task<IEnumerable<ArticlesModel>> GetAllArticleNames();
-        Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id);
+        Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(long id);
+        Task<string> CreateNewArticle(ArticlesModel article);
+        Task DeleteArticle(long id);
     }
 }

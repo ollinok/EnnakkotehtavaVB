@@ -1,8 +1,65 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
 }
+
+.fs-7 {
+    font-size: 0.9rem !important
+}
+
+.vb-hover-item:hover {
+    background-color: rgba(218,66,135,0.5);
+}
+.vb-hover-turq:hover {
+    background-color: rgba(0,159,147,0.5);
+}
+
+.vb-bg-turquoise {
+    background-color: rgba(0,159,147,0.6);
+}
+
+.vb-bg-pink {
+    background-color: rgba(218,66,135);
+}
+
+.vb-alphabet-font {
+    font-size: calc(0.005rem + 1.3vw) !important;
+}
+
+.vb-greek-font {
+    font-size: calc(2rem + 2vw) !important;
+}
+
+.vb-btn-nostyling {
+    border: none;
+    background-color: #FFFFFF;
+}
+
+.vb-btn-round {
+    /*display: block;*/
+    border-width: 1px;
+    width: 130px;
+}
+
+.vb-btn-round-left {
+    border-radius: 50px 0px 0px 50px;
+    padding: 3px 15px 3px 20px;
+}
+
+.vb-btn-round-right {
+    border-radius: 0px 50px 50px 0px;
+    padding: 3px 20px 3px 15px;
+}
+
+.vb-corder-box {
+    height: calc(60vh - 8rem);
+}
+
+
+
 
 h1:focus {
     outline: none;
@@ -20,6 +77,8 @@ a, .btn-link {
 
 .content {
     padding-top: 1.1rem;
+    min-height: calc(100vh - 1.1rem);
+    position: relative;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -59,6 +118,13 @@ a, .btn-link {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
+
+@media (max-width: 641px) {
+    /* Subtract the top nav bar and border */
+    .content{
+        min-height: calc(100vh - 3.5rem - 2px);
     }
+}

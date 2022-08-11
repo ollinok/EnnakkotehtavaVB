@@ -1,0 +1,86 @@
+﻿@using Models;
+
+@if (!infoIsSet)
+{
+    <div class="container col-xxl-4 col-lg-6 col-sm-10 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light" id="new-article-popup">
+        <div class="d-flex flex-column py-3 px-1">
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn-close" @onclick="CancelArticleCreation" aria-label="Sulje"></button>
+            </div>
+            <div>
+                <h3 class="text-center">Lisää uusi tuoteartikkeli</h3>
+            </div>
+            <div class="col-sm-9 col-12 align-self-center px-3 border border-1 border-secondary bg-gradient">
+                <EditForm Model="articleModel" OnValidSubmit="SendNewArticle">
+                    <div class="py-2">
+                        <label for="nimi" class="form-label">Tuotteen nimi:</label>
+                        <InputText class="form-control" id="nimi" placeholder="Nimi" @bind-Value="articleModel.Title" title="Tuotteen nimi" />
+                    </div>
+                    <div class="py-2">
+                        <label for="mg" class="form-label">Annoksen suuruus:</label>
+                        <InputNumber class="form-control" id="mg" @bind-Value="articleModel.Mg" title="Annoksen suuruus milligrammoissa"/>
+                    </div>
+                    <div class="py-2">
+                        <label for="amount" class="form-label">Pakkauksen tuotemäärä:</label>
+                        <InputNumber class="form-control" id="amount" @bind-Value="articleModel.Amount" title="Pakkauksen sisältämä tuotteen kappalemäärä"/>
+                    </div>
+                    <div class="py-2">
+                        <label for="ean" class="form-label">EAN-13-viivakoodi:</label>
+                        <InputText class="form-control" id="ean" placeholder="EAN-koodi" @bind-Value="articleModel.Ean" title="EAN-13-standardin mukainen koodi"/>
+                    </div>
+                    <DataAnnotationsValidator />
+                    @*<ValidationSummary />*@
+                    <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
+                        <button type="button" class="btn btn-danger" @onclick="CancelArticleCreation">Peruuta</button>
+                        <button type="submit" class="btn btn-success">Luo</button>
+                    </div>
+                    <ValidationMessage For="() => articleModel.Title" />
+                </EditForm>
+            </div>
+        </div> 
+    </div>
+}
+else
+{
+    <CascadingValue Value="article" Name="Article">
+        <ManagePricesForm CancelProcess="CancelArticleCreation"/>
+    </CascadingValue>
+}
+
+@code {
+    private ArticlesModel article = new ArticlesModel();
+    private NewArticleModel articleModel = new NewArticleModel();
+
+    [Parameter]
+    public EventCallback CloseComponent { get; set; }
+
+    private bool infoIsSet;
+
+    private void BuildFullName()
+    {
+        string fullName = "";
+        string t = articleModel.Title!;
+
+        t = char.ToUpper(t[0]) + t.Substring(1).ToLower();
+        fullName += $"{t} ";
+        fullName += $"{articleModel.Mg} mg ";
+        fullName += $"{articleModel.Amount} tabl.";
+
+        article.Name = fullName;
+        article.Ean = articleModel.Ean;
+    }
+
+    private void SendNewArticle()
+    {
+        // TODO Confirmation
+        BuildFullName();
+        infoIsSet = true;
+    }
+
+    private void CancelArticleCreation()
+    {
+        CloseForm();
+    }
+
+    private void CloseForm() => CloseComponent.InvokeAsync();
+}

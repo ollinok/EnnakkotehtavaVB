@@ -26,34 +26,37 @@ public class ArticlesData : IArticlesData
         return results;
     }
 
-    public async Task<ArticlesModel?> GetArticle(int id)
+    public async Task<ArticlesModel?> GetArticle(long id)
     {
         string sqlProcedure = "select * from articles where id = @Id";
         var article = await _db.LoadSqlData<ArticlesModel, dynamic>(sqlProcedure, new { Id = id });
         return article.FirstOrDefault();
     }
 
-    /*public Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id)
+    public async Task<string> CreateNewArticle(ArticlesModel article)
     {
-        string sqlProcedure = @"select articles.created_at CreatedAt, articles.*, prices.price, prices.price_group_id PriceGroupId, prices.created_at CreatedAt 
-                                from articles
-                                left join prices on prices.article_id = articles.id
-                                where articles.id = @Id";
-        Func<FullArticlesModel, PricesModel, FullArticlesModel> func = (article, price) => { article.Price = price; return article; };
-        string splitOn = "updated_at";
+        string sql = @"insert into articles (name, ean, created_at) values (@Name, @Ean, CURRENT_TIMESTAMP);
+                        select last_insert_id();";
+        return await _db.WriteSqlDataReturnId(sql, new { Name = article.Name, Ean = article.Ean });
+    }
 
-        return _db.LoadMultiMapSqlData<FullArticlesModel, PricesModel, dynamic>(sqlProcedure, new { Id = id }, func, splitOn);
-    }*/
+    public async Task DeleteArticle(long id)
+    {
+        string sql = @"delete from articles where id = @Id";
 
-    public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id)
+        await _db.WriteSqlData(sql, new { Id = id });
+    }
+
+    public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(long id)
     {
         string sqlProcedure = @"select articles.id, articles.name, articles.ean, articles.created_at CreatedAt, articles.updated_at UpdatedAt,
                                        prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,
-                                       price_groups.name
+                                       price_groups.id, price_groups.name
                                 from articles
                                 left join prices on prices.article_id = articles.id
                                 left join price_groups on price_groups.id = prices.price_group_id
-                                where articles.id = @Id";
+                                where articles.id = @Id
+                                order by price_groups.id";
         Func<FullArticlesModel, PricesModel, PriceGroupsModel, FullArticlesModel> func 
             = (article, price, priceGroup) => { article.Price = price; article.PriceGroup = priceGroup; return article; };
         string splitOn = "price,name";

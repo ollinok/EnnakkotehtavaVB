@@ -1,0 +1,110 @@
+﻿@inject IPriceGroupsData priceGData
+@inject IPricesData pricesData
+@inject IArticlesData articlesData
+
+<div class="container col-xxl-6 col-lg-8 col-sm-12 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
+    <div class="d-flex flex-column py-3 px-1">
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn-close" @onclick="CloseForm" aria-label="Sulje"></button>
+        </div>
+        <div>
+            <h3 class="text-center">Muokkaa hintoja</h3>
+        </div>
+        <div class="col-sm-10 col-12 align-self-center px-3 py-3 border border-1 border-secondary bg-gradient">
+            <EditForm class="" Model="priceModel" OnValidSubmit="(() => SendPrices())">
+                @foreach (var p in prices)
+                {
+                    <div class="d-flex justify-content-center py-1">
+                        <div class="col-4">
+                            <label for="@($"group{p.PriceGroupId}")" class="col-form-label">@($"{p.PriceGroup!.Name}:")</label>
+                        </div>
+                        <div class="input-group" style="max-width:150px;">
+                            <InputNumber TValue="decimal" 
+                                class="form-control"
+                                id="@($"group{p.PriceGroupId}")"
+                                @bind-Value="p.Price"
+                                aria-describedby="@($"addon{p.PriceGroupId}")"
+                            />
+                            <span class="input-group-text" id="@($"addon{p.PriceGroupId}")">€</span>
+                        </div>                
+                    </div>  
+                }
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
+                    <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
+                    <button type="submit" class="btn btn-success">Luo</button>
+                </div>
+            </EditForm>
+        </div>
+    </div> 
+</div>
+@code {
+    List<FullPricesModel> prices = new List<FullPricesModel>();
+    PricesModel priceModel = new PricesModel();
+    IEnumerable<PriceGroupsModel>? priceGroups;
+
+    [CascadingParameter(Name = "Article")]
+    private ArticlesModel? article { get; set; }
+
+    // In case of new Article
+    [Parameter]
+    public EventCallback CancelProcess { get; set; }
+    // In case of editing existing Article
+    [Parameter]
+    public EventCallback CloseEdit { get; set; }
+
+    private bool isNewArticle;
+
+    protected async override Task OnInitializedAsync()
+    {
+        priceGroups = await priceGData.GetAllPriceGroups();
+        foreach (var pg in priceGroups)
+        {
+            prices.Add(new FullPricesModel() { ArticleId = article.Id, PriceGroupId = pg.Id, PriceGroup = pg });
+        }
+
+        if (article.Id == 0)
+        {
+            isNewArticle = true;
+        }
+        else
+        {
+            var pe = await pricesData.GetAllPricesByArticleId(article.Id);
+
+            foreach (var p in pe)
+            {
+                int i = prices.FindIndex(x => x.PriceGroupId == p.PriceGroupId);
+                prices[i] = p;
+            }
+        }
+    }
+
+    private async void SendPrices()
+    {
+        // TODO Confirmation
+        if (isNewArticle)
+        {
+            long articleId = long.Parse(await articlesData.CreateNewArticle(article!));
+            await pricesData.CreatePricesForArticle(prices, articleId);
+        }
+        else
+        {
+            await pricesData.UpdatePricesForArticle(prices);
+        }
+        CloseForm();
+    }
+
+    private void CloseForm()
+    {
+        // TODO Confirmation
+        if (isNewArticle)
+        {
+            CancelProcess.InvokeAsync();
+        }
+        else
+        {
+            CloseEdit.InvokeAsync();
+        }
+    } 
+}

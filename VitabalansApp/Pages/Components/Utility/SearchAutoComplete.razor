@@ -1,0 +1,45 @@
+﻿<div>
+    <input
+        type="text"
+        placeholder="Hae..."
+        aria-label="Hakukenttä"
+        style="width:220px;"
+        @bind="searchText"
+        @oninput="((i) => SearchHandler((string)i.Value!))"
+        @onkeydown="@BrowseSuggestions"
+    />
+    @if (listOfItems is not null && listOfItems.Count() > 1 && searchText != "")
+    {
+        <div class="position-absolute" style="z-index:1; width:220px;">
+            <ul class="list-group">
+                @foreach (var name in listOfItems)
+                {
+                    <li class="list-group-item" id="autoc-@(name)" @onclick="() => SearchHandler(name)">@name</li>
+                }
+            </ul>
+        </div>
+    }
+    @*<input type="submit" hidden="@true"/>*@
+</div>
+
+@code {
+    private string searchText = "";
+
+    [CascadingParameter(Name = "ListOfItems")]
+    private IEnumerable<string>? listOfItems { get; set; }
+
+    [Parameter]
+    public EventCallback<string> FilterResults { get; set; }
+
+    private async Task SearchHandler(string text)
+    {
+        searchText = text;
+        await FilterResults.InvokeAsync(searchText);
+    }
+
+    private void BrowseSuggestions(KeyboardEventArgs e)
+    {
+        Console.WriteLine(e.Code);
+    }
+
+}

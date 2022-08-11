@@ -1,81 +1,31 @@
 ﻿@page "/Testisivu"
-@using DataAccess.Models.HelperModels
 @inject IArticlesData articlesData
 
-<h3>Testisivu</h3>
+<VitabalansApp.Pages.Components.ManagePricesForm>
 
-<input
-    type="text"
-    placeholder="Hae..."
-    aria-label="Hakukenttä"
-    @oninput="((i) => SearchHandler((string)i.Value))"
-    />
+</VitabalansApp.Pages.Components.ManagePricesForm>
+
+
 <div>
-    @if (articles is not null && articles.Count() < 10)
-    {
-        foreach(var article in articles)
-        {
-            <div>
-                <div @onclick="(() => OpenArticleInfo(article))">Name: @article.Name</div>
-            </div>
-        }
-    }
-</div>
-<div>
-    @if (chosenArticle is not null)
-    {
-        <div>
-            Nimi: @chosenArticle.First().Name;
-            EAN: @chosenArticle.First().Ean;
-        </div>
-        <div>
-            <h4>Hintaluokat</h4>
-            @foreach (var article in chosenArticle)
-            {
-                <div>
-                    @article.PriceGroup!.Name;: @article.Price!.Price;
-                </div>
-            }
-        </div>
-    }
+    loloololloo :D:DD:D
+    asdasdasdasdasdasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasas
 </div>
 
+
+
+
+@*<div class="container border-3 border-dark">
+    <EditForm Model="article" OnValidSubmit="OpenPricesForm">
+        <InputText id="title" @bind-Value="article.Title" />
+        <InputNumber id="mg" @bind-Value="article.Mg" />
+        <InputNumber id="amount" @bind-Value="article.Amount" />
+        <InputText id="ean" placeholder="EAN-koodi" @bind-Value="article.Ean" />
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <button type="submit">Luo</button>
+    </EditForm>
+</div>*@
 
 @code {
-    private string searchText = "";
-    private IEnumerable<ArticlesModel>? articles;
-
-    //protected async override Task OnInitializedAsync()
-    //{
-
-    //}
-
-    private async Task FilterArticles()
-    {
-        var filtered = await articlesData.GetAllArticleNames();
-
-        if (!string.IsNullOrWhiteSpace(searchText))
-        {
-            filtered = filtered.Where(a => a.Name!.StartsWith(searchText, StringComparison.CurrentCultureIgnoreCase));
-        }
-
-        articles = filtered;
-    }
-
-    private async Task SearchHandler(string text)
-    {
-        searchText = text;
-        await FilterArticles();
-    }
-
-    private async Task OpenArticleInfo(ArticlesModel article)
-    {
-        //chosenArticle = await articlesData.GetFullArticleInfo(articleId);
-        chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
-    }
-
-    // toiseen komponenttiin
-
-    private IEnumerable<FullArticlesModel> chosenArticle;
 
 }
