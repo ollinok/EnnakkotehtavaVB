@@ -22,6 +22,11 @@ html, body {
     background-color: rgba(218,66,135);
 }
 
+.vb-alphabet-font {
+    font-size: calc(0.005rem + 1.3vw);
+}
+
+
 h1:focus {
     outline: none;
 }
