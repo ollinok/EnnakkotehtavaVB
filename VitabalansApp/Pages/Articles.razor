@@ -15,7 +15,7 @@
                 </div>
                 <div class="mt-1">
                     <a href="Articles/@GetHrefNewArticle()">
-                         <button type="button" class="btn btn-success ms-3" @onclick="OpenNewForm">
+                         <button type="button" class="btn vb-bg-turquoise ms-3" @onclick="OpenNewForm">
                              Lisää uusi
                         </button>
                     </a>
@@ -29,7 +29,7 @@
                             @foreach(var article in articles)
                             {
                                 <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
-                                    <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-item">@article.Name</a>
+                                    <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
                                 </li>
                             }
                         </ul>
@@ -49,6 +49,8 @@
 </div>
 @if (newArticle)
 {
+    // Add an extra div on the background so the user cannot click outside the form
+    <div class="position-absolute top-0 start-0 vb-darken-bg"></div>
     <NewArticleForm CloseComponent="CloseNewForm"/>    
 }
 <AnchorNavigation />

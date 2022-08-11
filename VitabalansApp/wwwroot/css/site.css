@@ -10,7 +10,7 @@ html, body {
     font-size: 0.9rem !important
 }
 
-.vb-hover-item:hover {
+.vb-hover-pink:hover {
     background-color: rgba(218,66,135,0.5);
 }
 .vb-hover-turq:hover {
@@ -58,8 +58,11 @@ html, body {
     height: calc(60vh - 8rem);
 }
 
-
-
+.vb-darken-bg {
+    height: calc(100vh - 0rem);
+    width: calc(100vw - 240px);
+    background-color: rgba(0, 0, 0, 0.8)
+}
 
 h1:focus {
     outline: none;
