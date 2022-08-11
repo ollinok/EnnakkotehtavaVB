@@ -14,7 +14,12 @@
                     </CascadingValue>
                 </div>
                 <div class="mt-1">
-                    <button type="button" class="btn btn-success mx-2" @onclick="OpenNewForm">Lisää uusi</button>
+                    <a href="Articles/@GetHrefNewArticle()">
+                         <button type="button" class="btn btn-success ms-3" @onclick="OpenNewForm">
+                             Lisää uusi
+                        </button>
+                    </a>
+                   
                 </div>
             </div>
                 @if (articles is not null && articles.Count() <= 10)
@@ -24,7 +29,7 @@
                             @foreach(var article in articles)
                             {
                                 <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
-                                    <a href="Articles/@GetHref()" class="text-decoration-none text-black d-block p-3 vb-hover-item">@article.Name</a>
+                                    <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-item">@article.Name</a>
                                 </li>
                             }
                         </ul>
@@ -39,14 +44,14 @@
                 </CascadingValue>
             }
         </div>
-        <AnchorNavigation />
+        
     </div>
 </div>
 @if (newArticle)
 {
     <NewArticleForm CloseComponent="CloseNewForm"/>    
 }
-
+<AnchorNavigation />
 
 
 @code {
@@ -87,6 +92,7 @@
     private void CloseNewForm() => newArticle = false;
     private void OpenNewForm() => newArticle = true;
 
-    private string GetHref() => "#article-info";
+    private string GetHrefArticle() => "#article-info";
+    private string GetHrefNewArticle() => "#new-article-popup";
 
 }
