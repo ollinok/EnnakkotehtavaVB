@@ -26,6 +26,11 @@ html, body {
     font-size: calc(0.005rem + 1.3vw);
 }
 
+.vb-btn-nostyling {
+    border: none;
+    background-color: #FFFFFF;
+}
+
 
 h1:focus {
     outline: none;
