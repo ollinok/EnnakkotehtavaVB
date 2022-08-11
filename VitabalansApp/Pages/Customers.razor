@@ -3,36 +3,43 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager navMngr
 
-<div>
-    <h1>Hae asiakkaita</h1>
-    <div>
+<div class="container-fluid">
+    <div class="mb-2">
+        <h1>Hae asiakkaita</h1>
         <div>
             <input
                 type="text"
                 placeholder="Hae..."
                 aria-label="Hakukenttä"
                 @oninput="((i) => SearchHandler((string)i.Value!))"
+                style="width:220px;"
             />
         </div>
-        <div>
-            <ul class="list-group list-group-horizontal">
+    </div>
+    <div class="my-2 d-none d-xl-block">
+        <div class="col-12">
+            <div class="d-flex flex-wrap">
                 @foreach (var letter in alphabet)
                 {
-                    <li class="list-group-item" @onclick="(() => AlphabetHandler(letter))">
-                        @letter
-                    </li>
+                    <div class="px-1 vb-alphabet-font border-start border-end" @onclick="(() => AlphabetHandler(letter))">
+                        <button class="" style="border: none; background-color: #FFFFFF;">
+                            @letter
+                        </button>
+                    </div>
                 }
-            </ul>   
+            </div>
         </div>
     </div>
     <div>
         @if (customers is not null && isFiltered)
         {
-            <div>@customers.Count()</div>
-            <div>
-                <ul>
+            <div class="mx-2">
+                <h2>A</h2>
+                <ul class="d-xl-flex flex-wrap list-unstyled">
                     <Virtualize Items="@customers" Context="c" OverscanCount="20">
-                        <li @onclick="(() => GoToCustomerPage(c))">
+                        <li 
+                            class="py-1 col-12 col-xl-4 col-xxl-3 list-unstyled"
+                            @onclick="(() => GoToCustomerPage(c))">
                             @c.Name
                         </li>
                     </Virtualize>
