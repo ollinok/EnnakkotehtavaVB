@@ -62,9 +62,7 @@
             </div>
             <div> <!-- 3. Tilausluettelo-->
                 <CascadingValue Value="customer" Name="Customer">
-                    <CascadingValue Value="hasOrders" Name="HasOrders">
-                        <CustomerOrderList />
-                    </CascadingValue>
+                    <CustomerOrderList />
                 </CascadingValue>
             </div>
         </div>      
@@ -78,14 +76,12 @@
     [Parameter]
     public string? Id { get; set; }
 
-    private bool hasOrders;
     private FullCustomersModel? customer;
     private char[] greek = "\u0391\u0392\u0393\u0394\u0395\u0396\u0397\u0398\u0399\u039A".ToCharArray();
 
     protected async override Task OnInitializedAsync()
     {
         customer = await customersData.GetCustomerInfo(long.Parse(Id!));
-        hasOrders = customer?.Orders?.Count() != 0;
     }
 
     private void GoToCustomersPage() => navMngr.NavigateTo("/Customers");
