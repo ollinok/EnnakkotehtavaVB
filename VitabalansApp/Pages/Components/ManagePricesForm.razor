@@ -85,7 +85,7 @@
         // TODO Confirmation
         if (isNewArticle)
         {
-            int articleId = int.Parse(await articlesData.CreateNewArticle(article!));
+            long articleId = long.Parse(await articlesData.CreateNewArticle(article!));
             await pricesData.CreatePricesForArticle(prices, articleId);
         }
         else

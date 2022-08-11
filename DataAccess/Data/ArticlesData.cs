@@ -26,7 +26,7 @@ public class ArticlesData : IArticlesData
         return results;
     }
 
-    public async Task<ArticlesModel?> GetArticle(int id)
+    public async Task<ArticlesModel?> GetArticle(long id)
     {
         string sqlProcedure = "select * from articles where id = @Id";
         var article = await _db.LoadSqlData<ArticlesModel, dynamic>(sqlProcedure, new { Id = id });
@@ -40,14 +40,14 @@ public class ArticlesData : IArticlesData
         return await _db.WriteSqlDataReturnId(sql, new { Name = article.Name, Ean = article.Ean });
     }
 
-    public async Task DeleteArticle(int id)
+    public async Task DeleteArticle(long id)
     {
         string sql = @"delete from articles where id = @Id";
 
         await _db.WriteSqlData(sql, new { Id = id });
     }
 
-    public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(int id)
+    public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(long id)
     {
         string sqlProcedure = @"select articles.id, articles.name, articles.ean, articles.created_at CreatedAt, articles.updated_at UpdatedAt,
                                        prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,

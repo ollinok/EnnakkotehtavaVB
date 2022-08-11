@@ -26,7 +26,7 @@ public class CustomersData : ICustomersData
         return results;
     }
 
-    public async Task<FullCustomersModel?> GetCustomerInfo(int id)
+    public async Task<FullCustomersModel?> GetCustomerInfo(long id)
     {
         string sql = @"select customers.id, customers.name, customers.email, customers.address, customers.created_at CreatedAt, customers.updated_at UpdatedAt,
                               price_groups.name
