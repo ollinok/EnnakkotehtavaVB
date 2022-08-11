@@ -47,33 +47,64 @@
     [CascadingParameter(Name = "Article")]
     private ArticlesModel? article { get; set; }
 
+    // In case of new Article
     [Parameter]
     public EventCallback CancelProcess { get; set; }
+    // In case of editing existing Article
+    [Parameter]
+    public EventCallback CloseEdit { get; set; }
 
     private bool isNewArticle;
 
     protected async override Task OnInitializedAsync()
     {
         priceGroups = await priceGData.GetAllPriceGroups();
-
-        isNewArticle = true;
         foreach (var pg in priceGroups)
         {
-            prices.Add(new FullPricesModel() { PriceGroupId = pg.Id, PriceGroup = pg });
+            prices.Add(new FullPricesModel() { ArticleId = article.Id, PriceGroupId = pg.Id, PriceGroup = pg });
+        }
+
+        if (article.Id == 0)
+        {
+            isNewArticle = true;
+        }
+        else
+        {
+            var pe = await pricesData.GetAllPricesByArticleId(article.Id);
+
+            foreach (var p in pe)
+            {
+                int i = prices.FindIndex(x => x.PriceGroupId == p.PriceGroupId);
+                prices[i] = p;
+            }
         }
     }
 
     private async void SendPrices()
     {
         // TODO Confirmation
-        int articleId = int.Parse(await articlesData.CreateNewArticle(article!));
-        await pricesData.CreatePricesForArticle(prices, articleId);
+        if (isNewArticle)
+        {
+            int articleId = int.Parse(await articlesData.CreateNewArticle(article!));
+            await pricesData.CreatePricesForArticle(prices, articleId);
+        }
+        else
+        {
+            await pricesData.UpdatePricesForArticle(prices);
+        }
         CloseForm();
     }
 
     private void CloseForm()
     {
         // TODO Confirmation
-        CancelProcess.InvokeAsync();  
+        if (isNewArticle)
+        {
+            CancelProcess.InvokeAsync();
+        }
+        else
+        {
+            CloseEdit.InvokeAsync();
+        }
     } 
 }

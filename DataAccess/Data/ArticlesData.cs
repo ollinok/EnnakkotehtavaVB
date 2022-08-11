@@ -51,11 +51,12 @@ public class ArticlesData : IArticlesData
     {
         string sqlProcedure = @"select articles.id, articles.name, articles.ean, articles.created_at CreatedAt, articles.updated_at UpdatedAt,
                                        prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,
-                                       price_groups.name
+                                       price_groups.id, price_groups.name
                                 from articles
                                 left join prices on prices.article_id = articles.id
                                 left join price_groups on price_groups.id = prices.price_group_id
-                                where articles.id = @Id";
+                                where articles.id = @Id
+                                order by price_groups.id";
         Func<FullArticlesModel, PricesModel, PriceGroupsModel, FullArticlesModel> func 
             = (article, price, priceGroup) => { article.Price = price; article.PriceGroup = priceGroup; return article; };
         string splitOn = "price,name";
