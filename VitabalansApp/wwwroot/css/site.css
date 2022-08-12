@@ -10,15 +10,16 @@ html, body {
     font-size: 0.9rem !important
 }
 
-.vb-hover-item:hover {
-    background-color: rgba(218,66,135,0.5);
+.vb-hover-pink:hover {
+    background-color: rgba(218,66,135,0.4);
+    cursor: pointer;
 }
 .vb-hover-turq:hover {
-    background-color: rgba(0,159,147,0.5);
+    background-color: rgba(0,159,147,0.4);
 }
 
 .vb-bg-turquoise {
-    background-color: rgba(0,159,147,0.6);
+    background-color: rgba(0,159,147,0.7);
 }
 
 .vb-bg-pink {
@@ -54,12 +55,33 @@ html, body {
     padding: 3px 20px 3px 15px;
 }
 
+.vb-btn-modal {
+    width: 110px;
+}
+
 .vb-corder-box {
     height: calc(60vh - 8rem);
 }
 
+.vb-disable-bg-dark {
+    height: 100vh;
+    /* Subtract the sidebar */
+    width: calc(100vw - 240px);
+    background-color: rgba(0, 0, 0, 0.8)
+}
 
+.vb-disable-bg {
+    height: 100vh;
+    /* Subtract the sidebar */
+    width: calc(100vw - 240px);
+    background-color: rgba(0, 0, 0, 0)
+}
 
+.vb-autosearch-bg {
+    z-index:1;
+    width:220px;
+    background-color: white;
+}
 
 h1:focus {
     outline: none;
@@ -123,8 +145,23 @@ a, .btn-link {
 }
 
 @media (max-width: 641px) {
-    /* Subtract the top nav bar and border */
-    .content{
-        min-height: calc(100vh - 3.5rem - 2px);
+
+    .content {
+        /* Subtract the top nav bar */
+        min-height: calc(100vh - 3.5rem);
+    }
+
+    .vb-disable-bg-dark {
+        /* Subtract the top nav bar*/
+        height: calc(100vh - 3.5rem);
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0.8)
+    }
+
+    .vb-disable-bg {
+        /* Subtract the top nav bar */
+        height: calc(100vh - 3.5rem);
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0)
     }
 }

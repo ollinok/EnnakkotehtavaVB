@@ -1,7 +1,11 @@
 ﻿@using Models;
+@using VitabalansApp.Pages.Components.Utility;
 
-@if (!infoIsSet)
+@if (article is null)
 {
+    // Add an extra div on the background so the user cannot click outside the form
+    <div class="position-absolute top-0 start-0 vb-disable-bg-dark"></div>
+
     <div class="container col-xxl-4 col-lg-6 col-sm-10 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light" id="new-article-popup">
         <div class="d-flex flex-column py-3 px-1">
             <div class="d-flex justify-content-end">
@@ -11,7 +15,7 @@
                 <h3 class="text-center">Lisää uusi tuoteartikkeli</h3>
             </div>
             <div class="col-sm-9 col-12 align-self-center px-3 border border-1 border-secondary bg-gradient">
-                <EditForm Model="articleModel" OnValidSubmit="SendNewArticle">
+                <EditForm Model="articleModel" OnValidSubmit="BuildFullName">
                     <div class="py-2">
                         <label for="nimi" class="form-label">Tuotteen nimi:</label>
                         <InputText class="form-control" id="nimi" placeholder="Nimi" @bind-Value="articleModel.Title" title="Tuotteen nimi" />
@@ -34,7 +38,7 @@
                         <button type="button" class="btn btn-danger" @onclick="CancelArticleCreation">Peruuta</button>
                         <button type="submit" class="btn btn-success">Luo</button>
                     </div>
-                    <ValidationMessage For="() => articleModel.Title" />
+                    @*<ValidationMessage For="() => articleModel.Title" />*@
                 </EditForm>
             </div>
         </div> 
@@ -43,18 +47,23 @@
 else
 {
     <CascadingValue Value="article" Name="Article">
-        <ManagePricesForm CancelProcess="CancelArticleCreation"/>
+        <ManagePricesForm CloseEdit="CloseForm"/>
+    </CascadingValue>
+}
+@if (showPrompt)
+{
+    <CascadingValue Value="@("cancel")" Name="PromptType">
+        <ModalPrompt SendConfirmation="(x) => ModalPromptHandler(x)"/> 
     </CascadingValue>
 }
 
 @code {
-    private ArticlesModel article = new ArticlesModel();
-    private NewArticleModel articleModel = new NewArticleModel();
-
     [Parameter]
     public EventCallback CloseComponent { get; set; }
 
-    private bool infoIsSet;
+    private ArticlesModel? article;
+    private NewArticleModel articleModel = new NewArticleModel();
+    private bool showPrompt;
 
     private void BuildFullName()
     {
@@ -66,21 +75,23 @@ else
         fullName += $"{articleModel.Mg} mg ";
         fullName += $"{articleModel.Amount} tabl.";
 
-        article.Name = fullName;
+        (article ??= new()).Name = fullName;
         article.Ean = articleModel.Ean;
     }
 
-    private void SendNewArticle()
+    private void ModalPromptHandler(bool confirm)
     {
-        // TODO Confirmation
-        BuildFullName();
-        infoIsSet = true;
+        if (confirm)
+        {
+            CloseForm();
+        }
+        else
+        {
+            showPrompt = false;
+        }
     }
 
-    private void CancelArticleCreation()
-    {
-        CloseForm();
-    }
+    private void CancelArticleCreation() => showPrompt = true;
 
     private void CloseForm() => CloseComponent.InvokeAsync();
 }

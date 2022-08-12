@@ -3,38 +3,40 @@
 @using VitabalansApp.Pages.Components.Utility;
 @using VitabalansApp.Pages.Components;
 
-<div class="container-fluid">
+<div class="container-fluid" @onclick="CloseSearchList">
     <div class="row gx-lg-4">
         <div class="col-xl-6 mb-2">
             <div class="d-flex justify-content-between">     
                 <div class="mb-2">
                     <h1>Tuoteartikkelit</h1>
                     <CascadingValue Value="namesOnly" Name="ListOfItems">
-                        <SearchAutoComplete FilterResults="(s) => FilterArticles(s)"/>
+                        <CascadingValue Value="closeList" Name="CloseList">
+                            <SearchAutoComplete FilterResults="(s) => FilterArticles(s)"/>
+                        </CascadingValue>
                     </CascadingValue>
                 </div>
-                <div class="mt-1">
+                <div class="mt-1 d-flex flex-column justify-content-center">
                     <a href="Articles/@GetHrefNewArticle()">
-                         <button type="button" class="btn btn-success ms-3" @onclick="OpenNewForm">
-                             Lisää uusi
+                         <button type="button" class="btn vb-bg-turquoise vb-hover-turq ms-3 fs-5" @onclick="OpenNewForm">
+                             Lisää
                         </button>
                     </a>
                    
                 </div>
             </div>
-                @if (articles is not null && articles.Count() <= 10)
-                {
-                    <div class="card mt-2">
-                        <ul class="list-group list-group-flush">
-                            @foreach(var article in articles)
-                            {
-                                <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
-                                    <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-item">@article.Name</a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
+            @if (articles is not null && articles.Count() != 0 && articles.Count() <= 10)
+            {
+                <div class="card my-2">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var article in articles)
+                        {
+                            <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
+                                <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
         <div class="col-xl-6" id="article-info">
             @if (chosenArticle is not null)
@@ -44,26 +46,20 @@
                 </CascadingValue>
             }
         </div>
-        
     </div>
 </div>
 @if (newArticle)
 {
-    <NewArticleForm CloseComponent="CloseNewForm"/>    
+    <NewArticleForm CloseComponent="CloseNewForm"/>
 }
 <AnchorNavigation />
-
 
 @code {
     private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
     private IEnumerable<string>? namesOnly;
     private bool newArticle;
-
-    //protected async override Task OnInitializedAsync()
-    //{
-
-    //}
+    private bool closeList;
 
     private async Task FilterArticles(string s)
     {
@@ -80,7 +76,8 @@
         {
             nameOnly.Add(item.Name!.Split(' ')[0]);
         }
-        namesOnly = nameOnly.Take(10);
+        namesOnly = nameOnly.Take(15);
+        closeList = false;
     }
 
     private async Task OpenArticleInfo(ArticlesModel article)
@@ -90,9 +87,15 @@
 
     private void CloseArticleInfo() => chosenArticle = null;
     private void CloseNewForm() => newArticle = false;
-    private void OpenNewForm() => newArticle = true;
+    private void OpenNewForm() 
+    {
+        // Clear everything on the page for a better mobile view
+        newArticle = true; 
+        chosenArticle = null;
+        articles = null;
+    }
 
     private string GetHrefArticle() => "#article-info";
     private string GetHrefNewArticle() => "#new-article-popup";
-
+    private void CloseSearchList() => closeList = true;
 }

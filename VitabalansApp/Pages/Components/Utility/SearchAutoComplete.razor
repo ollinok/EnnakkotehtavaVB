@@ -8,18 +8,17 @@
         @oninput="((i) => SearchHandler((string)i.Value!))"
         @onkeydown="@BrowseSuggestions"
     />
-    @if (listOfItems is not null && listOfItems.Count() > 1 && searchText != "")
+    @if (listOfItems is not null && !closeList && searchText != "")
     {
-        <div class="position-absolute" style="z-index:1; width:220px;">
+        <div class="position-absolute vb-autosearch-bg">
             <ul class="list-group">
                 @foreach (var name in listOfItems)
                 {
-                    <li class="list-group-item" id="autoc-@(name)" @onclick="() => SearchHandler(name)">@name</li>
+                    <li class="list-group-item vb-hover-pink" id="autoc-@(name)" @onclick="() => SearchHandler(name)">@name</li>
                 }
             </ul>
         </div>
     }
-    @*<input type="submit" hidden="@true"/>*@
 </div>
 
 @code {
@@ -27,6 +26,10 @@
 
     [CascadingParameter(Name = "ListOfItems")]
     private IEnumerable<string>? listOfItems { get; set; }
+
+    // Close the suggestion list when the user clicks elsewhere on the page
+    [CascadingParameter(Name = "CloseList")]
+    private bool closeList { get; set; }
 
     [Parameter]
     public EventCallback<string> FilterResults { get; set; }
@@ -39,7 +42,8 @@
 
     private void BrowseSuggestions(KeyboardEventArgs e)
     {
-        Console.WriteLine(e.Code);
+        // TODO
+        // Console.WriteLine(e.Code);
     }
 
 }

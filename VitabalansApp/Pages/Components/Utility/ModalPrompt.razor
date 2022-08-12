@@ -1,0 +1,44 @@
+﻿<!-- Add an extra div on the background so the user cannot click outside the modal prompt -->
+<div class="position-absolute top-0 start-0 vb-disable-bg"></div>
+<div class="container col-xxl-3 col-lg-4 col-sm-6 col-10 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
+    <div class="my-4 text-center">
+        @message
+    </div>
+    <div class="d-flex justify-content-around my-3">
+        <button class="btn btn-success vb-btn-modal" @onclick="() => ConfirmHandler(true)">Kyllä</button>
+        <button class="btn btn-danger vb-btn-modal" @onclick="() => ConfirmHandler(false)">Ei</button>
+    </div>
+</div>
+@code {
+    [CascadingParameter(Name ="PromptType")]
+    private string? promptType { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> SendConfirmation { get; set; }
+
+    private string message = "";
+
+    protected override void OnInitialized()
+    {
+        switch (promptType)
+        {
+            case "cancel":
+                message = "Haluatko varmasti keskeyttää?";
+                break;
+            case "creation":
+                message = "Vahvista luonti.";
+                break;
+            case "edit":
+                message = "Vahvista muokkaus.";
+                break;
+            default:
+                message = "---";
+                break;
+        }
+    }
+
+    private void ConfirmHandler(bool confirm)
+    {
+        SendConfirmation.InvokeAsync(confirm);
+    }
+}

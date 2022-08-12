@@ -1,17 +1,21 @@
 ﻿@inject IPriceGroupsData priceGData
 @inject IPricesData pricesData
 @inject IArticlesData articlesData
+@using VitabalansApp.Pages.Components.Utility
+
+<!-- Add an extra div on the background so the user cannot click outside the form -->
+<div class="position-absolute top-0 start-0 vb-disable-bg-dark"></div>
 
 <div class="container col-xxl-6 col-lg-8 col-sm-12 position-absolute top-50 start-50 translate-middle border border-3 border-dark rounded bg-light">
     <div class="d-flex flex-column py-3 px-1">
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn-close" @onclick="CloseForm" aria-label="Sulje"></button>
+            <button type="button" class="btn-close" @onclick="CancelEditing" aria-label="Sulje"></button>
         </div>
         <div>
             <h3 class="text-center">Muokkaa hintoja</h3>
         </div>
         <div class="col-sm-10 col-12 align-self-center px-3 py-3 border border-1 border-secondary bg-gradient">
-            <EditForm class="" Model="priceModel" OnValidSubmit="(() => SendPrices())">
+            <EditForm class="" Model="priceModel" OnValidSubmit="(() => ConfirmEditing())">
                 @foreach (var p in prices)
                 {
                     <div class="d-flex justify-content-center py-1">
@@ -30,48 +34,50 @@
                     </div>  
                 }
                 <DataAnnotationsValidator />
-                <ValidationSummary />
+                @*<ValidationSummary />*@
                 <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
-                    <button type="button" class="btn btn-danger" @onclick="CloseForm">Peruuta</button>
+                    <button type="button" class="btn btn-danger" @onclick="CancelEditing">Peruuta</button>
                     <button type="submit" class="btn btn-success">Luo</button>
                 </div>
             </EditForm>
         </div>
     </div> 
 </div>
+@if (promptType is not null)
+{
+    <CascadingValue Value="promptType" Name="PromptType">
+        <ModalPrompt SendConfirmation="(x) => ModalPromptHandler(x)"/> 
+    </CascadingValue>
+}
+
 @code {
     List<FullPricesModel> prices = new List<FullPricesModel>();
     PricesModel priceModel = new PricesModel();
     IEnumerable<PriceGroupsModel>? priceGroups;
+    private bool isNewArticle;
+    private string? promptType;
 
     [CascadingParameter(Name = "Article")]
     private ArticlesModel? article { get; set; }
 
-    // In case of new Article
-    [Parameter]
-    public EventCallback CancelProcess { get; set; }
-    // In case of editing existing Article
     [Parameter]
     public EventCallback CloseEdit { get; set; }
-
-    private bool isNewArticle;
 
     protected async override Task OnInitializedAsync()
     {
         priceGroups = await priceGData.GetAllPriceGroups();
         foreach (var pg in priceGroups)
         {
-            prices.Add(new FullPricesModel() { ArticleId = article.Id, PriceGroupId = pg.Id, PriceGroup = pg });
+            prices.Add(new FullPricesModel() { ArticleId = article!.Id, PriceGroupId = pg.Id, PriceGroup = pg });
         }
 
-        if (article.Id == 0)
+        if (article!.Id == 0)
         {
             isNewArticle = true;
         }
         else
         {
             var pe = await pricesData.GetAllPricesByArticleId(article.Id);
-
             foreach (var p in pe)
             {
                 int i = prices.FindIndex(x => x.PriceGroupId == p.PriceGroupId);
@@ -80,9 +86,27 @@
         }
     }
 
+    private void ModalPromptHandler(bool confirm)
+    {
+        if (confirm)
+        {
+            if (promptType == "cancel")
+            {
+                CloseForm();
+            }
+            else
+            {
+                SendPrices();
+            }
+        }
+        else
+        {
+            promptType = null;
+        }
+    }
+
     private async void SendPrices()
     {
-        // TODO Confirmation
         if (isNewArticle)
         {
             long articleId = long.Parse(await articlesData.CreateNewArticle(article!));
@@ -95,16 +119,8 @@
         CloseForm();
     }
 
-    private void CloseForm()
-    {
-        // TODO Confirmation
-        if (isNewArticle)
-        {
-            CancelProcess.InvokeAsync();
-        }
-        else
-        {
-            CloseEdit.InvokeAsync();
-        }
-    } 
+    private void ConfirmEditing() => promptType = (isNewArticle ? "creation" : "edit" );
+    private void CancelEditing() => promptType = "cancel";
+
+    private void CloseForm() => CloseEdit.InvokeAsync();
 }
