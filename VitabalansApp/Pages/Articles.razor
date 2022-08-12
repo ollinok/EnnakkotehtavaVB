@@ -22,19 +22,19 @@
                    
                 </div>
             </div>
-                @if (articles is not null && articles.Count() <= 10)
-                {
-                    <div class="card mt-2">
-                        <ul class="list-group list-group-flush">
-                            @foreach(var article in articles)
-                            {
-                                <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
-                                    <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
+            @if (articles is not null && articles.Count() <= 10)
+            {
+                <div class="card mt-2">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var article in articles)
+                        {
+                            <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
+                                <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
         <div class="col-xl-6" id="article-info">
             @if (chosenArticle is not null)
@@ -44,14 +44,12 @@
                 </CascadingValue>
             }
         </div>
-        
+
     </div>
 </div>
 @if (newArticle)
 {
-    // Add an extra div on the background so the user cannot click outside the form
-    <div class="position-absolute top-0 start-0 vb-darken-bg"></div>
-    <NewArticleForm CloseComponent="CloseNewForm"/>    
+    <NewArticleForm CloseComponent="CloseNewForm"/>
 }
 <AnchorNavigation />
 
@@ -61,11 +59,6 @@
     private IEnumerable<ArticlesModel>? articles;
     private IEnumerable<string>? namesOnly;
     private bool newArticle;
-
-    //protected async override Task OnInitializedAsync()
-    //{
-
-    //}
 
     private async Task FilterArticles(string s)
     {
@@ -92,7 +85,11 @@
 
     private void CloseArticleInfo() => chosenArticle = null;
     private void CloseNewForm() => newArticle = false;
-    private void OpenNewForm() => newArticle = true;
+    private void OpenNewForm() 
+    { 
+        newArticle = true; 
+        chosenArticle = null; 
+    }
 
     private string GetHrefArticle() => "#article-info";
     private string GetHrefNewArticle() => "#new-article-popup";

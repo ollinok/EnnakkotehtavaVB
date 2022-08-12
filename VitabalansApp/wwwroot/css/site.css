@@ -54,14 +54,26 @@ html, body {
     padding: 3px 20px 3px 15px;
 }
 
+.vb-btn-modal {
+    width: 110px;
+}
+
 .vb-corder-box {
     height: calc(60vh - 8rem);
 }
 
-.vb-darken-bg {
-    height: calc(100vh - 0rem);
+.vb-disable-bg-dark {
+    height: 100vh;
+    /* Subtract the sidebar */
     width: calc(100vw - 240px);
     background-color: rgba(0, 0, 0, 0.8)
+}
+
+.vb-disable-bg {
+    height: 100vh;
+    /* Subtract the sidebar */
+    width: calc(100vw - 240px);
+    background-color: rgba(0, 0, 0, 0)
 }
 
 h1:focus {
@@ -126,8 +138,23 @@ a, .btn-link {
 }
 
 @media (max-width: 641px) {
-    /* Subtract the top nav bar and border */
-    .content{
+
+    .content {
+        /* Subtract the top nav bar and border */
         min-height: calc(100vh - 3.5rem - 2px);
+    }
+
+    .vb-disable-bg-dark {
+        /* Subtract the top nav bar and border */
+        height: calc(100vh - 3.5rem - 2px);
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0.8)
+    }
+
+    .vb-disable-bg {
+        /* Subtract the top nav bar and border */
+        height: calc(100vh - 3.5rem - 2px);
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0)
     }
 }
