@@ -29,6 +29,27 @@ public class SqlAccess : ISqlAccess
         await connection.ExecuteAsync(sqlProcedure, parameters);
     }
 
+    public async Task<bool> WriteSqlDataCheckSuccess<T>(string sqlProcedure, T parameters, string connectionId = "default")
+    {
+        using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));
+
+        bool success = false;
+        try
+        {
+            await connection.ExecuteAsync(sqlProcedure, parameters);
+            success = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("----------------------------------");
+            Console.WriteLine($"Attempting to create new User");
+            Console.WriteLine("----------------------------------");
+            Console.WriteLine(ex);
+            Console.WriteLine("----------------------------------");
+        }
+        return success;
+    }
+
     public async Task<string> WriteSqlDataReturnId<T>(string sql, T param, string connectionId = "default")
     {
         using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));

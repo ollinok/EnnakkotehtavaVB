@@ -1,0 +1,37 @@
+﻿@inject IUsersData usersData
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using VitabalansApp.Authentication
+
+<h3>Login</h3>
+
+<EditForm Model="loginInfo" OnValidSubmit="LoginUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText type="email" @bind-Value="loginInfo.Email" placeholder="Email"/>
+    <InputText type="password" @bind-Value="loginInfo.Password" placeholder="Salasana" />
+    <button type="submit">Login</button>
+</EditForm>
+
+<div>
+    @message
+</div>
+
+@code {
+    LoginModel loginInfo = new LoginModel();
+    string message = "";
+
+    private async Task LoginUser()
+    {
+        UsersModel userInfo = await usersData.AuthenticateUser(loginInfo);
+
+        if (userInfo is not null)
+        {
+            await localStorage.SetItemAsync("usertoken", $"{JwtData.CreateJWTToken(userInfo)}");
+            message = "success";
+        }
+        else
+        {
+            message = "fail";
+        }
+    }
+}

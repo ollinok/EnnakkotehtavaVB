@@ -1,11 +1,17 @@
 ﻿@page "/"
 @inject NavigationManager navMngr
+@using VitabalansApp.Pages.Components
 
-<PageTitle>Index</PageTitle>
 
 <h1>Lääkefirma Oy</h1>
 
+<Register />
+
+<Login />
+
 <button @onclick="GoToTestPage">Testisivulle</button>
+
+
 
 
 @code{
@@ -14,4 +20,6 @@
     {
         navMngr.NavigateTo("/Testisivu");
     }
+
+
 }
