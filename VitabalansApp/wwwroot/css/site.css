@@ -14,8 +14,10 @@ html, body {
     background-color: rgba(218,66,135,0.4);
     cursor: pointer;
 }
+
 .vb-hover-turq:hover {
     background-color: rgba(0,159,147,0.4);
+    cursor: pointer;
 }
 
 .vb-bg-turquoise {
@@ -78,8 +80,8 @@ html, body {
 }
 
 .vb-autosearch-bg {
-    z-index:1;
-    width:220px;
+    z-index: 1;
+    width: 220px;
     background-color: white;
 }
 
@@ -140,9 +142,9 @@ a, .btn-link {
     color: white;
 }
 
-.blazor-error-boundary::after {
-    content: "An error has occurred."
-}
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
 
 @media (max-width: 641px) {
 
