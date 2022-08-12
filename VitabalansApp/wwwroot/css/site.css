@@ -11,14 +11,15 @@ html, body {
 }
 
 .vb-hover-pink:hover {
-    background-color: rgba(218,66,135,0.5);
+    background-color: rgba(218,66,135,0.4);
+    cursor: pointer;
 }
 .vb-hover-turq:hover {
-    background-color: rgba(0,159,147,0.5);
+    background-color: rgba(0,159,147,0.4);
 }
 
 .vb-bg-turquoise {
-    background-color: rgba(0,159,147,0.6);
+    background-color: rgba(0,159,147,0.7);
 }
 
 .vb-bg-pink {
@@ -74,6 +75,12 @@ html, body {
     /* Subtract the sidebar */
     width: calc(100vw - 240px);
     background-color: rgba(0, 0, 0, 0)
+}
+
+.vb-autosearch-bg {
+    z-index:1;
+    width:220px;
+    background-color: white;
 }
 
 h1:focus {
@@ -140,20 +147,20 @@ a, .btn-link {
 @media (max-width: 641px) {
 
     .content {
-        /* Subtract the top nav bar and border */
-        min-height: calc(100vh - 3.5rem - 2px);
+        /* Subtract the top nav bar */
+        min-height: calc(100vh - 3.5rem);
     }
 
     .vb-disable-bg-dark {
-        /* Subtract the top nav bar and border */
-        height: calc(100vh - 3.5rem - 2px);
+        /* Subtract the top nav bar*/
+        height: calc(100vh - 3.5rem);
         width: 100vw;
         background-color: rgba(0, 0, 0, 0.8)
     }
 
     .vb-disable-bg {
-        /* Subtract the top nav bar and border */
-        height: calc(100vh - 3.5rem - 2px);
+        /* Subtract the top nav bar */
+        height: calc(100vh - 3.5rem);
         width: 100vw;
         background-color: rgba(0, 0, 0, 0)
     }
