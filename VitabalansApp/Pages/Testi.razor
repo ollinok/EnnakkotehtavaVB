@@ -1,4 +1,6 @@
 ﻿@page "/Testisivu"
+@attribute [Authorize(Roles = "employee")]
+@using System.IdentityModel.Tokens.Jwt
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 @if (usertoken is null)
@@ -10,11 +12,41 @@ else
     <div>Tokeni</div>
 }
 
+<AuthorizeView Roles="employee">
+    <Authorized>
+        <div>Olet valittu. @context.User.Identity.Name</div>
+    </Authorized>
+    <NotAuthorized>
+        <div>Mene pois.</div>
+    </NotAuthorized>
+</AuthorizeView>
+@*<AuthorizeView Policy="employee">
+    <div>Bonus</div>
+</AuthorizeView>*@
+
 @code {
     string? usertoken;
 
     protected async override Task OnInitializedAsync()
     {
-        usertoken = await localStorage.GetItemAsync<string>("usertoken");
+        usertoken = await localStorage.GetItemAsync<string>("jwt");
     }
+
+    private async Task<string> GetJWT()
+    {
+        usertoken = await localStorage.GetItemAsync<string>("jwt");
+
+        if (string.IsNullOrWhiteSpace(usertoken))
+        {
+            usertoken = null;
+        }
+
+        return usertoken;
+    }
+
+    //private async Task<bool> ValidateToken(string token)
+    //{
+    //    var tokenHandler = new JwtSecurityTokenHandler();
+    //    var valParams = new GetValidationParameters();
+    //}
 }

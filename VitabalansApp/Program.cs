@@ -1,9 +1,7 @@
-﻿using Blazored.LocalStorage;
-using DataAccess.DbAccess;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using DataAccess.DbAccess;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.IdentityModel.Tokens;
+using VitabalansApp.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,27 +11,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMemoryCache();
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateAudience = true,
-        ValidAudience = "ennakkotehtava-olli-nokkonen",
-        ValidateIssuer = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("super salainen avain"))
-    };
-});
-
-// Video 20
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("employee", policy =>
-    {
-        policy.RequireClaim("role", "employee");
-    });
-});
+builder.Services.AddScoped<AuthenticationStateProvider, UserAuthStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IArticlesData, ArticlesData>();
@@ -57,11 +36,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseAuthentication();
-
 app.UseRouting();
 
-app.UseAuthorization();
+/*app.UseAuthentication();
+app.UseAuthorization();*/
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

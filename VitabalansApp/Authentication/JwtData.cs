@@ -4,17 +4,16 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace VitabalansApp.Authentication;
 
-public class JwtData
+public static class JwtData
 {
     public static string CreateJWTToken(UsersModel user)
     {
-        var secret = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("super salainen avain"));
+        var secret = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("supersalainenavain"));
         var credentials = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
 
-        // Laita lisää?
         List<Claim> claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Name),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Name, user.Name),

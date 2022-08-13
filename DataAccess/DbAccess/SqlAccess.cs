@@ -42,8 +42,6 @@ public class SqlAccess : ISqlAccess
         catch (Exception ex)
         {
             Console.WriteLine("----------------------------------");
-            Console.WriteLine($"Attempting to create new User");
-            Console.WriteLine("----------------------------------");
             Console.WriteLine(ex);
             Console.WriteLine("----------------------------------");
         }
