@@ -2,8 +2,6 @@
 @attribute [Authorize(Roles = "employee")]
 @inject IArticlesData _articlesData
 @inject AuthenticationStateProvider AuthStateProvider
-@using VitabalansApp.Pages.Components.Utility;
-@using VitabalansApp.Pages.Components;
 
 <div class="container-fluid" @onclick="CloseSearchList">
     <div class="row gx-lg-4">
