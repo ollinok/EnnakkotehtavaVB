@@ -18,15 +18,14 @@ public static class JwtData
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Name, user.Name),
             new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, "employee"),
-            new Claim(ClaimTypes.Expiration, DateTime.Now.ToString())
+            new Claim(ClaimTypes.Role, "employee")
         };
 
         var jwtToken = new JwtSecurityToken(
             issuer: "ennakkotehtava-olli-nokkonen",
             audience: "ennakkotehtava-olli-nokkonen",
             claims: claims,
-            expires: DateTime.Now.AddMinutes(1),
+            expires: DateTime.UtcNow.AddMinutes(1),
             signingCredentials: credentials
         );
 

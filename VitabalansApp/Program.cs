@@ -1,8 +1,6 @@
 ﻿using DataAccess.DbAccess;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.IdentityModel.Tokens;
 using VitabalansApp.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,15 +13,6 @@ builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddScoped<AuthenticationStateProvider, UserAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
-
-/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateLifetime = true,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("supersalainenavain"))
-    };
-});*/
 
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IArticlesData, ArticlesData>();

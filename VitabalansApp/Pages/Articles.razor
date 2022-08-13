@@ -1,6 +1,7 @@
 ﻿@page "/Tuoteartikkelit"
 @attribute [Authorize(Roles = "employee")]
 @inject IArticlesData articlesData
+@inject AuthenticationStateProvider AuthStateProvider
 @using VitabalansApp.Pages.Components.Utility;
 @using VitabalansApp.Pages.Components;
 
@@ -61,6 +62,11 @@
     private IEnumerable<string>? namesOnly;
     private bool newArticle;
     private bool closeList;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await AuthStateProvider.GetAuthenticationStateAsync();
+    }
 
     private async Task FilterArticles(string s)
     {

@@ -1,5 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace VitabalansApp.Authentication;
 
@@ -30,13 +33,31 @@ public class UserAuthStateProvider : AuthenticationStateProvider
              */
         }
 
-        var identity = new ClaimsIdentity();
 
+        var tokenhandler = new JwtSecurityTokenHandler();
+        var validationParams = GetValidationParameters();
+
+        SecurityToken validatedToken;
+        if (!string.IsNullOrEmpty(token))
+        {
+            try
+            {
+                tokenhandler.ValidateToken(token.Replace("\"", ""), validationParams, out validatedToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                await _localStorage.RemoveItemAsync("jwt");
+                token = "";
+            }
+        }
+
+        var identity = new ClaimsIdentity();
         if (!string.IsNullOrEmpty(token))
         {
             identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
         }
-
+        
         var user = new ClaimsPrincipal(identity);
         var state = new AuthenticationState(user);
 
@@ -62,5 +83,17 @@ public class UserAuthStateProvider : AuthenticationStateProvider
             case 3: base64 += "="; break;
         }
         return Convert.FromBase64String(base64);
+    }
+    // END
+
+    public static TokenValidationParameters GetValidationParameters()
+    {
+        return new TokenValidationParameters()
+        {
+            ValidateLifetime = true,
+            ValidIssuer = "ennakkotehtava-olli-nokkonen",
+            ValidAudience = "ennakkotehtava-olli-nokkonen",
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("supersalainenavain"))
+        };
     }
 }
