@@ -17,7 +17,7 @@
     <NotAuthorized>
         <div class="d-flex flex-column justify-content-center align-items-center vb-fill-sidebar mx-4">
             <div class="text-center fst-italic fs-5">
-                Kirjaudu sisään käyttääksesi applikaatiota.
+                Kirjaudu sisään käyttääksesi applikaatiota
             </div>
             <div class="mt-3">
                 <button type="button" class="btn vb-btn vb-bg-turquoise" @onclick="GoToLoginPage">Kirjaudu sisään</button>
@@ -32,6 +32,7 @@
     {
         await _localStorage.RemoveItemAsync("jwt");
         await AuthStateProvider.GetAuthenticationStateAsync();
+        NavMngr.NavigateTo("/");
     }
 
     private void GoToLoginPage()
