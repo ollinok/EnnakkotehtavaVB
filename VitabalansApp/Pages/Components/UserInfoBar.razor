@@ -1,5 +1,6 @@
 ﻿@inject ILocalStorageService _localStorage
 @inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavMngr
 
 <AuthorizeView>
     <Authorized>
@@ -19,7 +20,7 @@
                 Kirjaudu sisään käyttääksesi applikaatiota.
             </div>
             <div class="mt-3">
-                <button type="button" class="btn vb-btn vb-bg-turquoise">Kirjaudu sisään</button>
+                <button type="button" class="btn vb-btn vb-bg-turquoise" @onclick="GoToLoginPage">Kirjaudu sisään</button>
             </div>
         </div>
     </NotAuthorized>
@@ -31,6 +32,11 @@
     {
         await _localStorage.RemoveItemAsync("jwt");
         await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+
+    private void GoToLoginPage()
+    {
+        NavMngr.NavigateTo("/Kirjaudu");
     }
 
 }

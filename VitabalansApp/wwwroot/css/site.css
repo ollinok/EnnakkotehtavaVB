@@ -47,10 +47,9 @@ html, body {
     opacity: 0.8;
 }
 
-
 .vb-btn-nostyling {
     border: none;
-    background-color: #FFFFFF;
+    background-color: rgba(0,0,0,0);
 }
 
 .vb-btn-round {
