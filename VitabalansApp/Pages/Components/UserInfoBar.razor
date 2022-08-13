@@ -1,0 +1,31 @@
+﻿@inject ILocalStorageService _localStorage
+@inject AuthenticationStateProvider AuthStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <div class="d-flex justify-content-center border border-1 bg-light">
+            <span class="bi bi-person-circle fs-2" aria-hidden="true"></span>
+            <div class="fs-6 ms-2 align-self-center">
+                @context.User.Identity.Name
+            </div>
+            <div class="d-flex align-items-center ms-1">
+                <button type="button" class="btn btn-close border border-1 vb-hover-pink" @onclick="LogOut"></button>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn vb-bg-pink">Kirjaudu sisään</button>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private async Task LogOut()
+    {
+        await _localStorage.RemoveItemAsync("jwt");
+        await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+
+}
