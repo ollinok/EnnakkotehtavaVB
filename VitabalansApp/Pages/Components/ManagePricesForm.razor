@@ -1,6 +1,6 @@
-﻿@inject IPriceGroupsData priceGData
-@inject IPricesData pricesData
-@inject IArticlesData articlesData
+﻿@inject IPriceGroupsData _priceGData
+@inject IPricesData _pricesData
+@inject IArticlesData _articlesData
 @using VitabalansApp.Pages.Components.Utility
 
 <!-- Add an extra div on the background so the user cannot click outside the form -->
@@ -65,7 +65,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        priceGroups = await priceGData.GetAllPriceGroups();
+        priceGroups = await _priceGData.GetAllPriceGroups();
         foreach (var pg in priceGroups)
         {
             prices.Add(new FullPricesModel() { ArticleId = article!.Id, PriceGroupId = pg.Id, PriceGroup = pg });
@@ -77,13 +77,27 @@
         }
         else
         {
-            var pe = await pricesData.GetAllPricesByArticleId(article.Id);
+            var pe = await _pricesData.GetAllPricesByArticleId(article.Id);
             foreach (var p in pe)
             {
                 int i = prices.FindIndex(x => x.PriceGroupId == p.PriceGroupId);
                 prices[i] = p;
             }
         }
+    }
+
+    private async void SendPrices()
+    {
+        if (isNewArticle)
+        {
+            long articleId = long.Parse(await _articlesData.CreateNewArticle(article!));
+            await _pricesData.CreatePricesForArticle(prices, articleId);
+        }
+        else
+        {
+            await _pricesData.UpdatePricesForArticle(prices);
+        }
+        CloseForm();
     }
 
     private void ModalPromptHandler(bool confirm)
@@ -103,20 +117,6 @@
         {
             promptType = null;
         }
-    }
-
-    private async void SendPrices()
-    {
-        if (isNewArticle)
-        {
-            long articleId = long.Parse(await articlesData.CreateNewArticle(article!));
-            await pricesData.CreatePricesForArticle(prices, articleId);
-        }
-        else
-        {
-            await pricesData.UpdatePricesForArticle(prices);
-        }
-        CloseForm();
     }
 
     private void ConfirmEditing() => promptType = (isNewArticle ? "creation" : "edit" );

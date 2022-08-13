@@ -33,16 +33,17 @@ public class UserAuthStateProvider : AuthenticationStateProvider
              */
         }
 
-
         var tokenhandler = new JwtSecurityTokenHandler();
         var validationParams = GetValidationParameters();
-
+        var identity = new ClaimsIdentity();
         SecurityToken validatedToken;
+
         if (!string.IsNullOrEmpty(token))
         {
             try
             {
                 tokenhandler.ValidateToken(token.Replace("\"", ""), validationParams, out validatedToken);
+                identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
             }
             catch (Exception ex)
             {
@@ -50,12 +51,6 @@ public class UserAuthStateProvider : AuthenticationStateProvider
                 await _localStorage.RemoveItemAsync("jwt");
                 token = "";
             }
-        }
-
-        var identity = new ClaimsIdentity();
-        if (!string.IsNullOrEmpty(token))
-        {
-            identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
         }
         
         var user = new ClaimsPrincipal(identity);

@@ -14,18 +14,17 @@ public static class JwtData
         List<Claim> claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, "employee"),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.Name, user.Name),
-            new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, "employee")
+            new Claim(JwtRegisteredClaimNames.Name, user.Name)
         };
 
         var jwtToken = new JwtSecurityToken(
             issuer: "ennakkotehtava-olli-nokkonen",
             audience: "ennakkotehtava-olli-nokkonen",
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(1),
+            expires: DateTime.UtcNow.AddHours(12),
             signingCredentials: credentials
         );
 

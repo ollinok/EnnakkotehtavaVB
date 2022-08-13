@@ -1,6 +1,6 @@
 ﻿@page "/Tuoteartikkelit"
 @attribute [Authorize(Roles = "employee")]
-@inject IArticlesData articlesData
+@inject IArticlesData _articlesData
 @inject AuthenticationStateProvider AuthStateProvider
 @using VitabalansApp.Pages.Components.Utility;
 @using VitabalansApp.Pages.Components;
@@ -19,7 +19,7 @@
                 </div>
                 <div class="mt-1 d-flex flex-column justify-content-center">
                     <a href="Tuoteartikkelit/@GetHrefNewArticle()">
-                         <button type="button" class="btn vb-btn vb-bg-turquoise ms-3 fs-5" @onclick="OpenNewForm">
+                         <button type="button" class="btn vb-btn vb-bg-turquoise ms-3" @onclick="OpenNewForm">
                              Lisää
                         </button>
                     </a>
@@ -70,7 +70,7 @@
 
     private async Task FilterArticles(string s)
     {
-        var filtered = await articlesData.GetAllArticleNames();
+        var filtered = await _articlesData.GetAllArticleNames();
         HashSet<string>? nameOnly = new HashSet<string>();
 
         if (!string.IsNullOrWhiteSpace(s))

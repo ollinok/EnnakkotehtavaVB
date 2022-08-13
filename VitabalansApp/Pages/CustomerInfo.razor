@@ -1,8 +1,8 @@
 ﻿@page "/Asiakastiedot/{Id}"
 @attribute [Authorize(Roles = "employee")]
-@inject ICustomersData customersData
-@inject IOrdersData ordersData
-@inject NavigationManager navMngr
+@inject ICustomersData _customersData
+@inject NavigationManager NavMngr
+@inject AuthenticationStateProvider AuthStateProvider
 @using VitabalansApp.Pages.Components;
 
 @if (customer is not null)
@@ -82,8 +82,9 @@
 
     protected async override Task OnInitializedAsync()
     {
-        customer = await customersData.GetCustomerInfo(long.Parse(Id!));
+        await AuthStateProvider.GetAuthenticationStateAsync();
+        customer = await _customersData.GetCustomerInfo(long.Parse(Id!));
     }
 
-    private void GoToCustomersPage() => navMngr.NavigateTo("/Asiakkaat");
+    private void GoToCustomersPage() => NavMngr.NavigateTo("/Asiakkaat");
 }

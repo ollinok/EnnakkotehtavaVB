@@ -7,22 +7,21 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    
+<div class="@NavMenuCssClass">
     <nav class="flex-column">
         <UserInfoBar />
         <AuthorizeView>
-            <div class="nav-item px-3 mt-2">
+            <div class="nav-item px-3 mt-2" @onclick="ToggleNavMenu">
                 <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                     <span class="bi bi-house-door-fill me-3" aria-hidden="true"></span> Etusivu
                 </NavLink>
             </div>
-            <div class="nav-item px-3">
+            <div class="nav-item px-3" @onclick="ToggleNavMenu">
                 <NavLink class="nav-link" href="Tuoteartikkelit" Match="NavLinkMatch.All">
                     <span class="bi bi-capsule me-3" aria-hidden="true"></span> Tuoteartikkelit
                 </NavLink>
             </div>
-            <div class="nav-item px-3">
+            <div class="nav-item px-3" @onclick="ToggleNavMenu">
                 <NavLink class="nav-link" href="Asiakkaat" Match="NavLinkMatch.All">
                     <span class="bi bi-person-fill me-3" aria-hidden="true"></span> Asiakkaat
                 </NavLink>
