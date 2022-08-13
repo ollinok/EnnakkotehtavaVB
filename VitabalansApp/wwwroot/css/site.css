@@ -28,6 +28,9 @@ html, body {
 .vb-bg-pink {
     background-color: rgba(218,66,135);
 }
+.vb-text-pink {
+    color: rgba(218,66,135);
+}
 
 .vb-alphabet-font {
     font-size: calc(0.005rem + 1.3vw) !important;
@@ -36,6 +39,14 @@ html, body {
 .vb-greek-font {
     font-size: calc(2rem + 2vw) !important;
 }
+
+.vb-btn {
+
+}
+.vb-btn:hover {
+    opacity: 0.8;
+}
+
 
 .vb-btn-nostyling {
     border: none;
@@ -84,6 +95,10 @@ html, body {
     z-index: 1;
     width: 220px;
     background-color: white;
+}
+
+.vb-fill-sidebar {
+    height: calc(100vh - 3.5rem);
 }
 
 h1:focus {
@@ -166,5 +181,9 @@ a, .btn-link {
         height: calc(100vh - 3.5rem);
         width: 100vw;
         background-color: rgba(0, 0, 0, 0)
+    }
+
+    .vb-fill-sidebar {
+        height: auto;
     }
 }

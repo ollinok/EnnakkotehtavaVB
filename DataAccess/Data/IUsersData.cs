@@ -2,6 +2,6 @@
 
 public interface IUsersData
 {
-    Task<UsersModel> AuthenticateUser(LoginModel user);
+    Task<UsersModel?> AuthenticateUser(LoginModel user);
     Task<bool> CreateUser(UsersModel user);
 }

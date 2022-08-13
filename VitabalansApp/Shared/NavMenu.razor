@@ -1,6 +1,6 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="">Lääkefirma Oy</a>
+        <a class="navbar-brand fw-bold fs-5" href="">Lääkefirma Oy</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -11,21 +11,23 @@
     
     <nav class="flex-column">
         <UserInfoBar />
-        <div class="nav-item px-3 mt-2">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill me-3" aria-hidden="true"></span> Etusivu
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Tuoteartikkelit" Match="NavLinkMatch.All">
-                <span class="bi bi-capsule me-3" aria-hidden="true"></span> Tuoteartikkelit
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Asiakkaat" Match="NavLinkMatch.All">
-                <span class="bi bi-person-fill me-3" aria-hidden="true"></span> Asiakkaat
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <div class="nav-item px-3 mt-2">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="bi bi-house-door-fill me-3" aria-hidden="true"></span> Etusivu
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Tuoteartikkelit" Match="NavLinkMatch.All">
+                    <span class="bi bi-capsule me-3" aria-hidden="true"></span> Tuoteartikkelit
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Asiakkaat" Match="NavLinkMatch.All">
+                    <span class="bi bi-person-fill me-3" aria-hidden="true"></span> Asiakkaat
+                </NavLink>
+            </div>
+        </AuthorizeView>
     </nav>
 </div>
 

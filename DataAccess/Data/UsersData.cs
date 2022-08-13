@@ -32,18 +32,22 @@ public class UsersData : IUsersData
         return await _db.WriteSqlDataCheckSuccess(sql, param);
     }
 
-    public async Task<UsersModel> AuthenticateUser(LoginModel user)
+    public async Task<UsersModel?> AuthenticateUser(LoginModel user)
     {
         string sql = @"SELECT id, name, email, password, created_at CreatedAt, updated_at UpdatedAt
                        FROM users
                        WHERE email = @Email";
-        var results = (await _db.LoadSqlData<UsersModel, dynamic>(sql, user)).Single();
+        var result = await _db.LoadSqlData<UsersModel, dynamic>(sql, user);
 
-        if (results.Password != Hash(user.Password))
+        UsersModel? authenticatedUser = null;
+        if (result.Count() != 0)
         {
-            results = null;
+            if ((result).Single().Password == Hash(user.Password!))
+            {
+                authenticatedUser = result.Single();
+            }
         }
 
-        return results;
+        return authenticatedUser;
     }
 }

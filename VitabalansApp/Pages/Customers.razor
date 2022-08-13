@@ -1,4 +1,5 @@
 ﻿@page "/Asiakkaat"
+@attribute [Authorize(Roles = "employee")]
 @inject ICustomersData customersData
 @inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager navMngr

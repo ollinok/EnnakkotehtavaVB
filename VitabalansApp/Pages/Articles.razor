@@ -1,4 +1,5 @@
 ﻿@page "/Tuoteartikkelit"
+@attribute [Authorize(Roles = "employee")]
 @inject IArticlesData articlesData
 @using VitabalansApp.Pages.Components.Utility;
 @using VitabalansApp.Pages.Components;

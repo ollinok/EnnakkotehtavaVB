@@ -1,4 +1,5 @@
 ﻿@page "/Asiakastiedot/{Id}"
+@attribute [Authorize(Roles = "employee")]
 @inject ICustomersData customersData
 @inject IOrdersData ordersData
 @inject NavigationManager navMngr
