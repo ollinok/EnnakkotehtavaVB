@@ -1,0 +1,91 @@
+﻿@inject IUsersData _usersData
+
+<h1 class="text-center">Rekisteröidy</h1>
+<div class="border border-1 px-4 py-3 bg-light @(borderColor)">
+    <EditForm Model="userInfo" OnValidSubmit="RegisterUser">
+        <DataAnnotationsValidator />
+        <div class="py-2">
+            <label for="name" class="form-label">Nimi:</label>
+            <InputText class="form-control" id="name" type="text" title="Nimi"
+                @bind-Value="userInfo.Name"
+                placeholder="Nimi" autocomplete="off"
+            />
+        </div>
+        @*<ValidationMessage For="() => loginInfo.Email" />*@
+        <div class="py-2">
+            <label for="email" class="form-label">Sähköposti:</label>
+            <InputText class="form-control" id="email" type="email" title="Sähköposti"
+                @bind-Value="userInfo.Email" @oninput="ClearBorders"
+                placeholder="Email" autocomplete="off"
+            />
+        </div>
+        @*<ValidationMessage For="() => loginInfo.Password" />*@
+        <div class="py-2">
+            <label for="password" class="form-label">Salasana:</label>
+            <InputText class="form-control" id="password" type="password" title="Salasana"
+                @bind-Value="userInfo.Password"
+                placeholder="Salasana" autocomplete="off"
+            />
+        </div>
+        <div class="py-2">
+            <label for="passwordConfirm" class="form-label">Salasanan vahvistus:</label>
+            <InputText class="form-control" id="passwordConfirm" type="password" title="Salasana"
+                @bind-Value="userInfo.ConfirmPassword"
+                placeholder="Salasana" autocomplete="off"
+            />
+        </div>
+        <div class="d-flex justify-content-between mt-2">
+            
+            @if (success)
+            {
+                <div class="text-success align-self-center">
+                    Rekisteröinti onnistui
+                </div>
+                <div class="my-2 ms-4">
+                    <button type="button" class="btn vb-btn vb-bg-turquoise" @onclick="OpenLoginForm">Kirjautumissivulle</button>
+                </div>
+            }
+            else
+            {
+                <div class="text-danger align-self-center">
+                    @message
+                </div>
+                <div class="my-2 ms-4">
+                    <button type="submit" class="btn vb-btn vb-bg-turquoise">Rekisteröidy</button>
+                </div>
+            }
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback CloseComponent { get; set; }
+
+    RegisterModel userInfo = new RegisterModel();
+    string message = "";
+    private string borderColor = "";
+    bool success;
+
+    private async Task RegisterUser()
+    {
+        success = await _usersData.CreateUser(userInfo);
+
+        if (!success)
+        {
+            message = "Sähköposti on jo käytössä";
+            borderColor = "border-danger";
+        }
+    }
+
+    private void ClearBorders()
+    {
+        borderColor = "";
+        message = "";
+    }
+
+    private void OpenLoginForm()
+    {
+        CloseComponent.InvokeAsync();
+    }
+}

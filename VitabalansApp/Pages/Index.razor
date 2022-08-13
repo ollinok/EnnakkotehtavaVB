@@ -5,11 +5,11 @@
 
 <h1>Lääkefirma Oy</h1>
 
-<Register />
+@*<Register />
 
-<Login />
+<Login />*@
 
-<button @onclick="GoToTestPage">Testisivulle</button>
+<button @onclick="GoToTestPage">Kirjautumissivu</button>
 
 
 
@@ -18,7 +18,7 @@
 
     private void GoToTestPage()
     {
-        navMngr.NavigateTo("/Testisivu");
+        navMngr.NavigateTo("/Kirjaudu");
     }
 
 
