@@ -2,6 +2,9 @@
 
 <h1 class="text-center">Rekisteröidy</h1>
 <div class="border border-1 px-4 py-3 bg-light @(borderColor)">
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-close" @onclick="OpenLoginForm"></button>
+    </div>
     <EditForm Model="userInfo" OnValidSubmit="RegisterUser">
         <DataAnnotationsValidator />
         <div class="py-2">

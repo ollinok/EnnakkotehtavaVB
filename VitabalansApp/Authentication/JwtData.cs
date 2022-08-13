@@ -18,7 +18,8 @@ public static class JwtData
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Name, user.Name),
             new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, "employee")
+            new Claim(ClaimTypes.Role, "employee"),
+            new Claim(ClaimTypes.Expiration, DateTime.Now.ToString())
         };
 
         var jwtToken = new JwtSecurityToken(

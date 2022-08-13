@@ -11,6 +11,9 @@
         {
             <h1 class="text-center">Kirjaudu sisään</h1>
             <div class="border border-1 px-4 py-3 bg-light @(borderColor)">
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-close" @onclick="GoToHomePage"></button>
+                </div>
                 <EditForm Model="loginInfo" OnValidSubmit="LoginUser">
                     <DataAnnotationsValidator />
                     @*<ValidationMessage For="() => loginInfo.Email" />*@
@@ -62,11 +65,19 @@
 
         if (userInfo is not null)
         {
-            await _localStorage.SetItemAsync("jwt", $"{JwtData.CreateJWTToken(userInfo)}");
-            var token = await _localStorage.GetItemAsStringAsync("jwt");
-            await AuthStateProvider.GetAuthenticationStateAsync();
+            if (userInfo.Id != 0)
+            {
+                await _localStorage.SetItemAsync("jwt", $"{JwtData.CreateJWTToken(userInfo)}");
+                var token = await _localStorage.GetItemAsStringAsync("jwt");
+                await AuthStateProvider.GetAuthenticationStateAsync();
 
-            NavMngr.NavigateTo("/");
+                NavMngr.NavigateTo("/");
+            }
+            else
+            {
+                borderColor = "border-danger";
+                message = "Väärä salasana";
+            }
         }
         else
         {
@@ -75,8 +86,6 @@
         }
     }
 
-    //private void OpenRegistrationForm() => showRegistration = true;
-    //private void CloseRegistraionForm() => showRegistration = false;
     private void RegistrationFormToggle()
     {
         showRegistration = !showRegistration;
@@ -88,4 +97,6 @@
         borderColor = "";
         message = "";
     }
+
+    private void GoToHomePage() => NavMngr.NavigateTo("/");
 }

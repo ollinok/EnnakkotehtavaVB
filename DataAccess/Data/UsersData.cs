@@ -42,9 +42,13 @@ public class UsersData : IUsersData
         UsersModel? authenticatedUser = null;
         if (result.Count() != 0)
         {
-            if ((result).Single().Password == Hash(user.Password!))
+            if (result.Single().Password == Hash(user.Password!))
             {
                 authenticatedUser = result.Single();
+            }
+            else
+            {
+                authenticatedUser = new UsersModel();
             }
         }
 
