@@ -56,7 +56,7 @@
 <AnchorNavigation />
 
 @code {
-    private IEnumerable<FullArticlesModel>? chosenArticle;
+    private ArticlesModel? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
     private IEnumerable<string>? namesOnly;
     private bool newArticle;
@@ -83,7 +83,7 @@
 
     private async Task OpenArticleInfo(ArticlesModel article)
     {
-        chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
+        chosenArticle = article;
     }
 
     private void CloseArticleInfo() => chosenArticle = null;
