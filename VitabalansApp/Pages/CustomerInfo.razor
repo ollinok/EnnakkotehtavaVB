@@ -1,4 +1,4 @@
-﻿@page "/CustomerInfo/{Id}"
+﻿@page "/Asiakastiedot/{Id}"
 @inject ICustomersData customersData
 @inject IOrdersData ordersData
 @inject NavigationManager navMngr
@@ -84,5 +84,5 @@
         customer = await customersData.GetCustomerInfo(long.Parse(Id!));
     }
 
-    private void GoToCustomersPage() => navMngr.NavigateTo("/Customers");
+    private void GoToCustomersPage() => navMngr.NavigateTo("/Asiakkaat");
 }

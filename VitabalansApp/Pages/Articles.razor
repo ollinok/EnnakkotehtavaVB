@@ -1,4 +1,4 @@
-﻿@page "/Articles"
+﻿@page "/Tuoteartikkelit"
 @inject IArticlesData articlesData
 @using VitabalansApp.Pages.Components.Utility;
 @using VitabalansApp.Pages.Components;
@@ -16,7 +16,7 @@
                     </CascadingValue>
                 </div>
                 <div class="mt-1 d-flex flex-column justify-content-center">
-                    <a href="Articles/@GetHrefNewArticle()">
+                    <a href="Tuoteartikkelit/@GetHrefNewArticle()">
                          <button type="button" class="btn vb-bg-turquoise vb-hover-turq ms-3 fs-5" @onclick="OpenNewForm">
                              Lisää
                         </button>
@@ -31,7 +31,7 @@
                         @foreach (var article in articles)
                         {
                             <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
-                                <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
+                                <a href="Tuoteartikkelit/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
                             </li>
                         }
                     </ul>

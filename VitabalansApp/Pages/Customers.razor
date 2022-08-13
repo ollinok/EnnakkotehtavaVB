@@ -1,4 +1,4 @@
-﻿@page "/Customers"
+﻿@page "/Asiakkaat"
 @inject ICustomersData customersData
 @inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager navMngr
@@ -109,6 +109,6 @@
 
     private void GoToCustomerPage(CustomersModel customer)
     {
-        navMngr.NavigateTo($"/CustomerInfo/{customer.Id}");
+        navMngr.NavigateTo($"/Asiakastiedot/{customer.Id}");
     }
 }
