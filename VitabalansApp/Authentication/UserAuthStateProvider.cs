@@ -61,6 +61,7 @@ public class UserAuthStateProvider : AuthenticationStateProvider
         return state;
     }
 
+#nullable disable
     // https://github.com/patrickgod/BlazorAuthenticationTutorial/blob/master/BlazorAuthenticationTutorial/Client/CustomAuthStateProvider.cs
     public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {

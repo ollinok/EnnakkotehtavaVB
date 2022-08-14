@@ -6,6 +6,7 @@ namespace VitabalansApp.Authentication;
 
 public static class JwtData
 {
+#nullable disable
     public static string CreateJWTToken(UsersModel user)
     {
         var secret = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("supersalainenavain"));

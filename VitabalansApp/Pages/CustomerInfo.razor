@@ -44,7 +44,10 @@
                     Hintaryhmä
                 </div>
                 <div class="vb-greek-font border border-1 py-4 px-5 bg-light">
-                    @greek[customer.PriceGroup.Id - 1]
+                    @if (customer.PriceGroup is not null)
+                    {
+                        @greek[customer.PriceGroup.Id - 1]
+                    }
                 </div>
                 <div class="fs-5 text-decoration-underline">
                     @customer.PriceGroup?.Name
