@@ -75,8 +75,16 @@
 
     private async Task GetFilterState()
     {
-        var results = await SessionStorage.GetAsync<string>(nameof(searchText));
-        searchText = results.Success && results.Value is not null ? results.Value : "";
+        try
+        {
+            var results = await SessionStorage.GetAsync<string>(nameof(searchText));
+            searchText = results.Success && results.Value is not null ? results.Value : "";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            searchText = "";
+        }
     }
 
     private async Task SaveFilterState()
