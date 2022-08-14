@@ -18,8 +18,8 @@ public class ArticlesData : IArticlesData
         var results = _cache.Get<IEnumerable<ArticlesModel>>(cacheName);
         if (results == null)
         {
-            string sqlProcedure = "select id, name from articles order by name";
-            results = await _db.LoadSqlData<ArticlesModel, dynamic>(sqlProcedure, new { });
+            string sql = "select id, name from articles order by name";
+            results = await _db.LoadSqlData<ArticlesModel, dynamic>(sql, new { });
 
             _cache.Set(cacheName, results, TimeSpan.FromMinutes(1));
         }
@@ -28,8 +28,8 @@ public class ArticlesData : IArticlesData
 
     public async Task<ArticlesModel?> GetArticle(long id)
     {
-        string sqlProcedure = "select * from articles where id = @Id";
-        var article = await _db.LoadSqlData<ArticlesModel, dynamic>(sqlProcedure, new { Id = id });
+        string sql = "select * from articles where id = @Id";
+        var article = await _db.LoadSqlData<ArticlesModel, dynamic>(sql, new { Id = id });
         return article.FirstOrDefault();
     }
 
@@ -49,7 +49,7 @@ public class ArticlesData : IArticlesData
 
     public async Task<IEnumerable<FullArticlesModel>> GetFullArticleInfo(long id)
     {
-        string sqlProcedure = @"select articles.id, articles.name, articles.ean, articles.created_at CreatedAt, articles.updated_at UpdatedAt,
+        string sql = @"select articles.id, articles.name, articles.ean, articles.created_at CreatedAt, articles.updated_at UpdatedAt,
                                        prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,
                                        price_groups.id, price_groups.name
                                 from articles
@@ -61,6 +61,6 @@ public class ArticlesData : IArticlesData
             = (article, price, priceGroup) => { article.Price = price; article.PriceGroup = priceGroup; return article; };
         string splitOn = "price,name";
 
-        return await _db.LoadMultiMapSqlData<FullArticlesModel, PricesModel, PriceGroupsModel, dynamic>(sqlProcedure, new { Id = id }, func, splitOn);
+        return await _db.LoadMultiMapSqlData<FullArticlesModel, PricesModel, PriceGroupsModel, dynamic>(sql, new { Id = id }, func, splitOn);
     }
 }

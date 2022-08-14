@@ -18,8 +18,8 @@ public class CustomersData : ICustomersData
         var results = _cache.Get<IEnumerable<CustomersModel>>(CacheName);
         if (results == null)
         {
-            string sqlProcedure = "select id, name from customers order by name";
-            results = await _db.LoadSqlData<CustomersModel, dynamic>(sqlProcedure, new { });
+            string sql = "select id, name from customers order by name";
+            results = await _db.LoadSqlData<CustomersModel, dynamic>(sql, new { });
 
             _cache.Set(CacheName, results, TimeSpan.FromMinutes(1));
         }

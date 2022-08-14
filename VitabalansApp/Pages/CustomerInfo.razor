@@ -6,24 +6,24 @@
 
 @if (customer is not null)
 {
-    <div class="container-fluid"> <!-- Koko sivu-->
-        <div class="d-flex justify-content-between"> <!-- 2. Yläpalkki -->
-            <div class=""> <!-- 3. Nimi -->
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between">
+            <div class="">
                 <h2>@customer.Name</h2>
             </div>
             <div class="">
                 <button type="button" class="btn btn-close" @onclick="GoToCustomersPage"></button>
             </div>
         </div>
-        <div class="row"> <!-- 2. Infoalue -->
-            <div class="col-12 col-lg-4"> <!-- 3. Kuva/Google Maps -->
+        <div class="row">
+            <div class="col-12 col-lg-4">
                 <img 
                     src="/images/apteekkik.jpg"
                     alt="Apteekki"
                     class="img-fluid border border-2 border-dark"
                 />
             </div>
-            <div class="col-12 col-lg-4 d-flex flex-column justify-content-center my-2"> <!-- 3. Yhteystiedot -->
+            <div class="col-12 col-lg-4 d-flex flex-column justify-content-center my-2">
                 <div class="px-2 border border-1 bg-light">
                     <div class="my-3 fs-5">
                         <div>
@@ -57,13 +57,13 @@
 
         <hr>
         
-        <div> <!-- 2. Tilausalue -->
-            <div> <!-- 3. Tilausyläpalkki -->
+        <div>
+            <div>
                 <div>
                     <h3>Tilaukset</h3>
                 </div>
             </div>
-            <div> <!-- 3. Tilausluettelo-->
+            <div>
                 <CascadingValue Value="customer" Name="Customer">
                     <CustomerOrderList />
                 </CascadingValue>

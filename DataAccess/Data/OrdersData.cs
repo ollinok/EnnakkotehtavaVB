@@ -9,7 +9,7 @@ public class OrdersData : IOrdersData
     {
         _db = db;
     }
-
+    // UNUSED
     /*public async Task<FullOrdersModel> GetOrderById(int id)
     {
         string sql = @"select order_items.id, order_items.quantity, order_items.price, order_items.created_at CreatedAt, order_items.updated_at UpdatedAt,
@@ -25,7 +25,7 @@ public class OrdersData : IOrdersData
         return;
     }*/
 
-    public async Task<List<FullOrdersModel>> GetOrdersByList(IEnumerable<OrdersModel> orders)
+    public async Task<List<FullOrdersModel>?> GetOrdersByList(IEnumerable<OrdersModel> orders)
     {
         string sql = "";
         foreach (var order in orders)

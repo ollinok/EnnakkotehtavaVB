@@ -40,10 +40,10 @@
         await FilterResults.InvokeAsync(searchText);
     }
 
-    private async Task BrowseSuggestions(KeyboardEventArgs e)
+    private void BrowseSuggestions(KeyboardEventArgs e)
     {
         // TODO
-        Console.WriteLine(e.Code);
+        //Console.WriteLine(e.Code);
         //if (e.Code == "Enter" || e.Code == "NumpadEnter")
         //{
         //    await SearchHandler(listOfItems?.FirstOrDefault() ?? "");

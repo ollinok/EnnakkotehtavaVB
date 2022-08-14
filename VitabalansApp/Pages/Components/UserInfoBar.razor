@@ -35,7 +35,6 @@
 @code {
     private bool showPrompt;
 
-    //private void LogOut() => showPrompt = true;
     private async Task LogOut() => await ConfirmLogOut(true);
 
     private async Task ConfirmLogOut(bool confirm)

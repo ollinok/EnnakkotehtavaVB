@@ -8,12 +8,6 @@ public class PricesData : IPricesData
         _db = db;
     }
 
-    /*public async Task<IEnumerable<PricesModel>> GetAllPricesByArticleId(int id)
-    {
-        string sql = @"select * from prices where article_id = @AId order by price_group_id";
-        return await _db.LoadSqlData<PricesModel, dynamic>(sql, new { AId = id });
-    }*/
-
     public async Task<IEnumerable<FullPricesModel>> GetAllPricesByArticleId(long id)
     {
         string sql = @"select prices.id, prices.price_group_id PriceGroupId, prices.article_id ArticleId, prices.price, prices.created_at CreatedAt, prices.updated_at UpdatedAt,
@@ -27,21 +21,6 @@ public class PricesData : IPricesData
         string splitOn = "id";
 
         return await _db.LoadMultiMapSqlData<FullPricesModel, PriceGroupsModel, dynamic>(sql, new { AId = id }, func, splitOn);
-    }
-
-    // Turha?
-    public async Task CreatePrice(long articleId, PricesModel price)
-    {
-        string sql = @"insert into prices (price_group_id, article_id, price, created_at)
-                       values (@PgID, @AId, @Price, CURRENT_TIMESTAMP)";
-        var param = new
-        {
-            PgId = price.PriceGroupId,
-            AId = articleId,
-            Price = price.Price
-        };
-
-        await _db.WriteSqlData(sql, param);
     }
 
     public async Task CreatePricesForArticle(List<FullPricesModel> prices, long articleId)

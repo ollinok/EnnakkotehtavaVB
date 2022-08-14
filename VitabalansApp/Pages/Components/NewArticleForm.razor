@@ -32,12 +32,10 @@
                         <InputText class="form-control" id="ean" placeholder="EAN-koodi" @bind-Value="articleModel.Ean" title="EAN-13-standardin mukainen koodi"/>
                     </div>
                     <DataAnnotationsValidator />
-                    @*<ValidationSummary />*@
                     <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
                         <button type="button" class="btn vb-btn vb-bg-pink vb-btn-modal" @onclick="CancelArticleCreation">Peruuta</button>
                         <button type="submit" class="btn vb-btn vb-bg-turquoise vb-btn-modal">Luo</button>
                     </div>
-                    @*<ValidationMessage For="() => articleModel.Title" />*@
                 </EditForm>
             </div>
         </div> 
