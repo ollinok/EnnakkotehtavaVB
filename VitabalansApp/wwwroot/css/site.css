@@ -195,4 +195,14 @@ a, .btn-link {
     .vb-fill-sidebar {
         height: auto;
     }
+
+    .vb-hide-mobile {
+        display: none;
+    }
+}
+
+@media (max-height: 700px) {
+    .vb-hide-mobile {
+        display: none;
+    }
 }

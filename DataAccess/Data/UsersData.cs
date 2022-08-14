@@ -27,7 +27,7 @@ public class UsersData : IUsersData
         {
             user.Name,
             user.Email,
-            Password = Hash(user.Password)
+            Password = Hash(user.Password!)
         };
         return await _db.WriteSqlDataCheckSuccess(sql, param);
     }

@@ -2,7 +2,7 @@
 
 @if (fullArticleInfo is not null)
 {
-    <div class="container border border-2 pt-3 px-3 bg-light">
+    <div class="container border border-2 pt-3 px-3 bg-light @((basicArticleInfo is not null ? "vb-hide-mobile" : ""))">
         <div class="d-flex justify-content-between">
             <h2 class="mb-0 vb-article-font">@fullArticleInfo.First().Name</h2>
             <button type="button" class="btn-close" @onclick="CloseArticle" aria-label="Sulje"></button>
