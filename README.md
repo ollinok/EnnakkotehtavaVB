@@ -43,9 +43,9 @@ Applikaatio Lääkefirma Oy:n työntekijöille. Kirjautunut työntekijä pystyy 
 
 | Toiminto                    | Kuvaus                                                                        |   Työmäärä  |
 | --------------------------- | ----------------------------------------------------------------------------- | ----------- |
-| API-rajapinta               | Uusien asiakkaiden luonti. Asiakkaiden tilausten luonti ja tietojen muokkaus. |    Laaja    |
-| Tavarantoimittajat (sivu)   | Sivu tavarantoimittajien tietojen selaamiseen.                                |  Keskisuuri |
-| Käyttäjien roolit           | Kirjautuneiden käyttäjien valtuutus roolien perusteella.                      |  Keskisuuri |
-| Käyttäjien hallinta         | Admin-näkymä. Kaikkien käyttäjätietojen hallinta.                             |    Laaja    |
-| Käyttäjien historia         | Käyttäjätapahtumien loggaus.                                                  |    Laaja    |
-| Unit testit                 | Yksilölliset testit mock-tietokantaa käyttäen.                                |    Laaja    |
+| API-rajapinta               | Uusien asiakkaiden luonti. Asiakkaiden tilausten luonti ja tietojen muokkaus. | Laaja       |
+| Tavarantoimittajat (sivu)   | Sivu tavarantoimittajien tietojen selaamiseen.                                | Keskisuuri  |
+| Käyttäjien roolit           | Kirjautuneiden käyttäjien valtuutus roolien perusteella.                      | Keskisuuri  |
+| Käyttäjien hallinta         | Admin-näkymä. Kaikkien käyttäjätietojen hallinta.                             | Keskisuuri  |
+| Käyttäjien historia         | Käyttäjätapahtumien loggaus.                                                  | Laaja       |
+| Unit testit                 | Yksilölliset testit mock-tietokantaa käyttäen.                                | Laaja       |
