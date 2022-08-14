@@ -11,7 +11,7 @@
             <button type="button" class="btn-close" @onclick="CancelEditing" aria-label="Sulje"></button>
         </div>
         <div>
-            <h3 class="text-center">Muokkaa hintoja</h3>
+            <h3 class="text-center">@(isNewArticle ? "Syötä hintatiedot" : "Muokkaa hintoja")</h3>
         </div>
         <div class="col-sm-10 col-12 align-self-center px-2 py-3 border border-1 border-secondary bg-gradient">
             <EditForm class="" Model="priceModel" OnValidSubmit="(() => ConfirmEditing())">

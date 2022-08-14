@@ -165,6 +165,12 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
+@media (max-width: 1199px) {
+    .vb-article-font {
+        font-size: calc(0.9rem + 2vw) !important;
+    }
+}
+
 @media (max-width: 641px) {
 
     .content {
@@ -191,9 +197,3 @@ a, .btn-link {
     }
 }
 
-@media (max-width: 1200px) {
-    .vb-article-font {
-        font-size: calc(0.9rem + 2vw) !important;
-    }
-
-}

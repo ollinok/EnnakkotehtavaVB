@@ -68,3 +68,9 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+@media (max-width: 640px) {
+    .page {
+        min-height: 100vh;
+    }
+}
