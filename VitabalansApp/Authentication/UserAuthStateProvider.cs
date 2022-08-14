@@ -86,6 +86,7 @@ public class UserAuthStateProvider : AuthenticationStateProvider
     {
         return new TokenValidationParameters()
         {
+            ClockSkew = TimeSpan.Zero,
             ValidateLifetime = true,
             ValidIssuer = "ennakkotehtava-olli-nokkonen",
             ValidAudience = "ennakkotehtava-olli-nokkonen",

@@ -26,6 +26,7 @@ public static class JwtData
             audience: "ennakkotehtava-olli-nokkonen",
             claims: claims,
             expires: DateTime.UtcNow.AddHours(12),
+            notBefore: DateTime.UtcNow,
             signingCredentials: credentials
         );
 
