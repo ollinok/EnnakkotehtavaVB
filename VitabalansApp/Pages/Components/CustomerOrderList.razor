@@ -1,4 +1,4 @@
-﻿@inject IOrdersData ordersData
+﻿@inject IOrdersData _ordersData
 @using VitabalansApp.Pages.Components.Utility
 
 @if (hasOrders && orders is null)
@@ -87,7 +87,7 @@
 
     private async Task GetOrders()
     {
-        orders = await ordersData.GetOrdersByList(customer!.Orders!);
+        orders = await _ordersData.GetOrdersByList(customer!.Orders!);
         // Reverse the list to get the newest entries on top
         orders.Reverse();
         sortedNew = true;

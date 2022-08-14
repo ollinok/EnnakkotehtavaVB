@@ -1,7 +1,7 @@
-﻿@page "/Articles"
-@inject IArticlesData articlesData
-@using VitabalansApp.Pages.Components.Utility;
-@using VitabalansApp.Pages.Components;
+﻿@page "/Tuoteartikkelit"
+@attribute [Authorize(Roles = "employee")]
+@inject IArticlesData _articlesData
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="container-fluid" @onclick="CloseSearchList">
     <div class="row gx-lg-4">
@@ -16,8 +16,8 @@
                     </CascadingValue>
                 </div>
                 <div class="mt-1 d-flex flex-column justify-content-center">
-                    <a href="Articles/@GetHrefNewArticle()">
-                         <button type="button" class="btn vb-bg-turquoise vb-hover-turq ms-3 fs-5" @onclick="OpenNewForm">
+                    <a href="Tuoteartikkelit/@GetHrefNewArticle()">
+                         <button type="button" class="btn vb-btn vb-bg-turquoise ms-3" @onclick="OpenNewForm">
                              Lisää
                         </button>
                     </a>
@@ -31,7 +31,7 @@
                         @foreach (var article in articles)
                         {
                             <li class="fw-bold list-group-item p-0 border border-2" @onclick="(() => OpenArticleInfo(article))">
-                                <a href="Articles/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
+                                <a href="Tuoteartikkelit/@GetHrefArticle()" class="text-decoration-none text-black d-block p-3 vb-hover-turq">@article.Name</a>
                             </li>
                         }
                     </ul>
@@ -42,7 +42,7 @@
             @if (chosenArticle is not null)
             {
                 <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-                    <Article CloseComponent="CloseArticleInfo"/>
+                    <Article CloseComponent="(a) => CloseArticleInfo(a)"/>
                 </CascadingValue>
             }
         </div>
@@ -55,15 +55,21 @@
 <AnchorNavigation />
 
 @code {
+    //private ArticlesModel? chosenArticle;
     private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
     private IEnumerable<string>? namesOnly;
     private bool newArticle;
     private bool closeList;
 
+    protected async override Task OnInitializedAsync()
+    {
+        await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+
     private async Task FilterArticles(string s)
     {
-        var filtered = await articlesData.GetAllArticleNames();
+        var filtered = await _articlesData.GetAllArticleNames();
         HashSet<string>? nameOnly = new HashSet<string>();
 
         if (!string.IsNullOrWhiteSpace(s))
@@ -82,10 +88,20 @@
 
     private async Task OpenArticleInfo(ArticlesModel article)
     {
-        chosenArticle = await articlesData.GetFullArticleInfo(article.Id);
+        chosenArticle = await _articlesData.GetFullArticleInfo(article.Id);
     }
 
-    private void CloseArticleInfo() => chosenArticle = null;
+    private async Task CloseArticleInfo(FullArticlesModel article)
+    {
+        if (article is not null)
+        {
+            await OpenArticleInfo(article);
+        }
+        else
+        {
+            chosenArticle = null;      
+        }
+    }
     private void CloseNewForm() => newArticle = false;
     private void OpenNewForm() 
     {

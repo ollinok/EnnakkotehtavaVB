@@ -1,17 +1,22 @@
 ﻿@page "/"
 @inject NavigationManager navMngr
 
-<PageTitle>Index</PageTitle>
+<div class="container-fluid">
+    <h1>Lääkefirma Oy</h1>
+    <div>
 
-<h1>Lääkefirma Oy</h1>
+    </div>
+</div>
 
-<button @onclick="GoToTestPage">Testisivulle</button>
+
 
 
 @code{
 
     private void GoToTestPage()
     {
-        navMngr.NavigateTo("/Testisivu");
+        navMngr.NavigateTo("/Kirjaudu");
     }
+
+
 }

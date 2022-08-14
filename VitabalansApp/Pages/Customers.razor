@@ -1,7 +1,9 @@
-﻿@page "/Customers"
-@inject ICustomersData customersData
-@inject ProtectedSessionStorage sessionStorage
-@inject NavigationManager navMngr
+﻿@page "/Asiakkaat"
+@attribute [Authorize(Roles = "employee")]
+@inject ICustomersData _customersData
+@inject ProtectedSessionStorage SessionStorage
+@inject NavigationManager NavMngr
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="container-fluid">
     <div class="mb-2">
@@ -56,6 +58,11 @@
     private char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".ToCharArray();
     private List<CustomersModel>? customers;
 
+    protected async override Task OnInitializedAsync()
+    {
+        await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+
     protected async override Task OnAfterRenderAsync(bool firstReload)
     {
         if (firstReload)
@@ -68,13 +75,13 @@
 
     private async Task GetFilterState()
     {
-        var results = await sessionStorage.GetAsync<string>(nameof(searchText));
+        var results = await SessionStorage.GetAsync<string>(nameof(searchText));
         searchText = results.Success && results.Value is not null ? results.Value : "";
     }
 
     private async Task SaveFilterState()
     {
-        await sessionStorage.SetAsync(nameof(searchText), searchText);
+        await SessionStorage.SetAsync(nameof(searchText), searchText);
     }
 
     private async Task SearchHandler(string text)
@@ -91,7 +98,7 @@
 
     private async Task FilterCustomers()
     {
-        var filtered = await customersData.GetAllCustomerNames();
+        var filtered = await _customersData.GetAllCustomerNames();
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
@@ -109,6 +116,6 @@
 
     private void GoToCustomerPage(CustomersModel customer)
     {
-        navMngr.NavigateTo($"/CustomerInfo/{customer.Id}");
+        NavMngr.NavigateTo($"/Asiakastiedot/{customer.Id}");
     }
 }
