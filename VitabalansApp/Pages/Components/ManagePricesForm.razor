@@ -12,18 +12,18 @@
         </div>
         <div class="text-center">
             <h3>@(isNewArticle ? "Syötä hintatiedot" : "Muokkaa hintoja")</h3>
-            <h4>@(article is not null ? $"{article.Name}" : "")</h4>
+            <h5>@(article is not null ? $"{article.Name}" : "")</h5>
         </div>
-        <div class="col-sm-10 col-12 align-self-center px-2 py-3 border border-1 border-secondary bg-gradient">
+        <div class="col-sm-10 col-12 align-self-center px-2 py-2 border border-1 border-secondary bg-gradient">
             <EditForm class="" Model="priceModel" OnValidSubmit="(() => ConfirmEditing())">
                 @foreach (var p in prices)
                 {
-                    <div class="d-inline-flex flex-column flex-md-row py-1 px-3 col-6 justify-content-between">
+                    <div class="d-inline-flex flex-column flex-md-row py-1 px-1 col-6 justify-content-between">
                         <div class="">
                             <label for="@($"group{p.PriceGroupId}")" class="col-form-label">@($"{p.PriceGroup!.Name}:")</label>
                         </div>
                         <div class="input-group" style="max-width:150px;">
-                            <InputNumber TValue="decimal" 
+                            <InputNumber TValue="decimal"
                                 class="form-control"
                                 id="@($"group{p.PriceGroupId}")"
                                 @bind-Value="p.Price"
@@ -35,9 +35,9 @@
                 }
                 <DataAnnotationsValidator />
                 @*<ValidationSummary />*@
-                <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
+                <div class="d-flex justify-content-md-end gap-md-4 justify-content-between pt-2">
                     <button type="button" class="btn vb-btn vb-bg-pink vb-btn-modal" @onclick="CancelEditing">Peruuta</button>
-                    <button type="submit" class="btn vb-btn vb-bg-turquoise vb-btn-modal">Luo</button>
+                    <button type="submit" class="btn vb-btn vb-bg-turquoise vb-btn-modal">@((isNewArticle ? "Luo" : "Muokkaa"))</button>
                 </div>
             </EditForm>
         </div>
