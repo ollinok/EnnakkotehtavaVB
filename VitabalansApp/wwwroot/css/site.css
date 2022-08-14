@@ -84,7 +84,7 @@ html, body {
     height: 100vh;
     /* Subtract the sidebar */
     width: 100vw;
-    background-color: rgba(0, 0, 0, 0.8)
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .vb-disable-bg {
@@ -196,4 +196,3 @@ a, .btn-link {
         height: auto;
     }
 }
-

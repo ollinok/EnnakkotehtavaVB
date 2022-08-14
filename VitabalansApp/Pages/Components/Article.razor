@@ -16,7 +16,10 @@
             </div>
             <div class="align-self-md-end">
                 <div class="d-flex justify-content-center my-3 ms-2">
-                    <button class="btn vb-btn vb-bg-pink" type="button" @onclick="ManagePrices">Muokkaa hintoja</button>
+                    <a href="/Tuoteartikkelit/#price-form">
+                        <button class="btn vb-btn vb-bg-pink" id="edit-prices-btn" type="button" @onclick="ManagePrices">Muokkaa hintoja</button>
+                    </a>
+                    
                 </div>
                 <div class="d-flex justify-content-end fst-italic">
                     Päivitetty: @(fullArticleInfo.First().UpdatedAt != DateTime.MinValue ? fullArticleInfo.First().UpdatedAt.ToString("d") : fullArticleInfo.First().CreatedAt.ToString("d"))
@@ -50,10 +53,11 @@
 }
 @if (basicArticleInfo is not null)
 {
-    <CascadingValue Value="basicArticleInfo" Name="Article">
-        <ManagePricesForm CloseEdit="ClosePriceEdit"/>
-    </CascadingValue>
+        <CascadingValue Value="basicArticleInfo" Name="Article">
+            <ManagePricesForm CloseEdit="ClosePriceEdit"/>
+        </CascadingValue>
 }
+<AnchorNavigation />
 
 @code {
     [CascadingParameter(Name = "ChosenArticle")]
