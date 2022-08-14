@@ -57,18 +57,12 @@
 
 @code {
     [CascadingParameter(Name = "ChosenArticle")]
-    private ArticlesModel? chosenArticle { get; set; }
+    IEnumerable<FullArticlesModel>? fullArticleInfo { get; set; }
 
     [Parameter]
-    public EventCallback CloseComponent { get; set; }
+    public EventCallback<FullArticlesModel> CloseComponent { get; set; }
 
-    IEnumerable<FullArticlesModel>? fullArticleInfo;
     ArticlesModel? basicArticleInfo;
-
-    protected async override Task OnInitializedAsync()
-    {
-        fullArticleInfo = await _articlesData.GetFullArticleInfo(chosenArticle!.Id);
-    }
 
     private void ManagePrices()
     {
@@ -82,10 +76,11 @@
         };
     }
 
-    private async Task ClosePriceEdit()
+    private void ClosePriceEdit()
     {
         basicArticleInfo = null;
-        fullArticleInfo = await _articlesData.GetFullArticleInfo(chosenArticle!.Id);
+        ReloadArticle();
     } 
-    private void CloseArticle() => CloseComponent.InvokeAsync();
+    private void CloseArticle() => CloseComponent.InvokeAsync(null);
+    private void ReloadArticle() => CloseComponent.InvokeAsync(fullArticleInfo!.First());
 }

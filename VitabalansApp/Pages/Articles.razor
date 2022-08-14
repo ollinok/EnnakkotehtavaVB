@@ -42,7 +42,7 @@
             @if (chosenArticle is not null)
             {
                 <CascadingValue Value="chosenArticle" Name="ChosenArticle">
-                    <Article CloseComponent="CloseArticleInfo"/>
+                    <Article CloseComponent="(a) => CloseArticleInfo(a)"/>
                 </CascadingValue>
             }
         </div>
@@ -55,7 +55,8 @@
 <AnchorNavigation />
 
 @code {
-    private ArticlesModel? chosenArticle;
+    //private ArticlesModel? chosenArticle;
+    private IEnumerable<FullArticlesModel>? chosenArticle;
     private IEnumerable<ArticlesModel>? articles;
     private IEnumerable<string>? namesOnly;
     private bool newArticle;
@@ -85,12 +86,22 @@
         closeList = false;
     }
 
-    private void OpenArticleInfo(ArticlesModel article)
+    private async Task OpenArticleInfo(ArticlesModel article)
     {
-        chosenArticle = article;
+        chosenArticle = await _articlesData.GetFullArticleInfo(article.Id);
     }
 
-    private void CloseArticleInfo() => chosenArticle = null;
+    private async Task CloseArticleInfo(FullArticlesModel article)
+    {
+        if (article is not null)
+        {
+            await OpenArticleInfo(article);
+        }
+        else
+        {
+            chosenArticle = null;      
+        }
+    }
     private void CloseNewForm() => newArticle = false;
     private void OpenNewForm() 
     {

@@ -17,7 +17,7 @@
             <EditForm class="" Model="priceModel" OnValidSubmit="(() => ConfirmEditing())">
                 @foreach (var p in prices)
                 {
-                    <div class="d-inline-flex flex-column flex-sm-row py-1 px-3 col-6 justify-content-between">
+                    <div class="d-inline-flex flex-column flex-md-row py-1 px-3 col-6 justify-content-between">
                         <div class="">
                             <label for="@($"group{p.PriceGroupId}")" class="col-form-label">@($"{p.PriceGroup!.Name}:")</label>
                         </div>
