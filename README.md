@@ -23,7 +23,7 @@ heroku container:release -a ennakko-tehtava-olli-nokkonen web
 
 
 ## Kuvaus
-Applikaatio Lääkefirma Oy:n työntekijöille. Kirjautunut työntekijä pystyy selaamaan asiakas- ja tuoteartikkelitietoja. Tuoteartikkeleiden hintoja on mahdollista muokata hintaryhmittäin.
+Applikaatio Lääkefirma Oy:n työntekijöille. Kirjautunut työntekijä pystyy selaamaan asiakas- ja tuoteartikkelitietoja.
 
 ## Toiminnot
 - Käyttäjän todennus ja valtuutus sisäänkirjauksella käyttäen JsonWebTokeneja
@@ -40,4 +40,11 @@ Applikaatio Lääkefirma Oy:n työntekijöille. Kirjautunut työntekijä pystyy 
 - Bootstrap 5.1.3
 
 ## Suunnitellut lisätoiminnot
-- API-rajapinta tilausten tekoon
+
+| Toiminto                    | Kuvaus                                                                        |   Työmäärä  |
+| --------------------------- | ----------------------------------------------------------------------------- | ----------- |
+| API-rajapinta               | Uusien asiakkaiden luonti. Asiakkaiden tilausten luonti ja tietojen muokkaus. |    Laaja    |
+| Tavarantoimittajat (sivu)   | Sivu tavarantoimittajien tietojen selaamiseen.                                |  Keskisuuri |
+| Käyttäjien roolit           | Kirjautuneiden käyttäjien valtuutus roolien perusteella.                      |  Keskisuuri |
+| Käyttäjien hallinta         | Admin-näkymä. Kaikkien käyttäjätietojen hallinta.                             |    Laaja    |
+| Käyttäjien historia         | Käyttäjätapahtumien loggaus.                                                  |    Laaja    |
