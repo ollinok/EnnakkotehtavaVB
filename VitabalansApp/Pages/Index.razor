@@ -1,10 +1,25 @@
 ﻿@page "/"
+@inject IDatabaseData _databaseData
 @inject NavigationManager navMngr
 
 <div class="container-fluid">
-    <h1>Lääkefirma Oy</h1>
-    <div>
-
+    <div class="text-center mt-2">
+        <h1>Lääkefirma Oy</h1>
+        <span class="fst-italic">Asiakkuuksien & Tuoteartikkeleiden hallintasovellus</span>
+    </div>  
+    <div class="col-12 col-lg-8 col-xl-4 container border border-1 bg-light p-4 mt-4">
+        <div class="fs-5 d-flex">
+            <span class="col-6">Tuoteartikkeleita:</span>
+            <span class="col-6 text-end">@((counts is not null ? counts.ArticleCount : "-"))</span>
+        </div>
+        <div class="fs-5 d-flex">
+            <span class="col-6">Asiakkaita:</span>
+            <span class="col-6 text-end">@((counts is not null ? counts.CustomerCount : "-"))</span>
+        </div>
+        <div class="fs-5 d-flex">
+            <span class="col-6">Tilauksia:</span>
+            <span class="col-6 text-end">@((counts is not null ? counts.OrderCount : "-"))</span>
+        </div>
     </div>
 </div>
 
@@ -12,11 +27,15 @@
 
 
 @code{
+    private DbRowCountModel? counts;
 
     private void GoToTestPage()
     {
         navMngr.NavigateTo("/Kirjaudu");
     }
 
-
+    protected async override Task OnInitializedAsync()
+    {
+        counts = await _databaseData.GetTableCounts();
+    }
 }

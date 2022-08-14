@@ -20,6 +20,7 @@ builder.Services.AddSingleton<ICustomersData, CustomersData>();
 builder.Services.AddSingleton<IOrdersData, OrdersData>();
 builder.Services.AddSingleton<IPriceGroupsData, PriceGroupsData>();
 builder.Services.AddSingleton<IPricesData, PricesData>();
+builder.Services.AddSingleton<IDatabaseData, DatabaseData>();
 builder.Services.AddScoped<IUsersData, UsersData>();
 
 var app = builder.Build();
