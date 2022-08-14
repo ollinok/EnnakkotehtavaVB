@@ -51,6 +51,7 @@
 
 @code {
     List<FullPricesModel> prices = new List<FullPricesModel>();
+    List<FullPricesModel> originalPrices = new List<FullPricesModel>();
     PricesModel priceModel = new PricesModel();
     IEnumerable<PriceGroupsModel>? priceGroups;
     private bool isNewArticle;
@@ -82,6 +83,7 @@
                 int i = prices.FindIndex(x => x.PriceGroupId == p.PriceGroupId);
                 prices[i] = p;
             }
+            originalPrices = prices.ConvertAll(price => new FullPricesModel(price));
         }
     }
 
@@ -94,7 +96,17 @@
         }
         else
         {
-            await _pricesData.UpdatePricesForArticle(prices);
+            // Only send the updated
+            List<FullPricesModel> updated = new List<FullPricesModel>();
+            for (int i = 0; i < prices.Count(); i++)
+            {
+                if (prices[i].Price != originalPrices[i].Price)
+                {
+                    updated.Add(prices[i]);
+                }
+            }
+
+            await _pricesData.UpdatePricesForArticle(updated);
         }
         CloseForm();
     }
