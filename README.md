@@ -48,3 +48,4 @@ Applikaatio Lääkefirma Oy:n työntekijöille. Kirjautunut työntekijä pystyy 
 | Käyttäjien roolit           | Kirjautuneiden käyttäjien valtuutus roolien perusteella.                      |  Keskisuuri |
 | Käyttäjien hallinta         | Admin-näkymä. Kaikkien käyttäjätietojen hallinta.                             |    Laaja    |
 | Käyttäjien historia         | Käyttäjätapahtumien loggaus.                                                  |    Laaja    |
+| Unit testit                 | Yksilölliset testit mock-tietokantaa käyttäen.                                |    Laaja    |
