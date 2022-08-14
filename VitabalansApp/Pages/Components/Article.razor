@@ -1,12 +1,14 @@
-﻿@if (chosenArticle is not null)
+﻿@inject IArticlesData _articlesData
+
+@if (fullArticleInfo is not null)
 {
-    <div class="container border border-2 pt-3 px-3 bg-light">
+    <div class="container border border-2 pt-3 px-3 bg-light @((basicArticleInfo is not null ? "vb-hide-mobile" : ""))">
         <div class="d-flex justify-content-between">
-            <h2 class="mb-0">@chosenArticle.First().Name</h2>
+            <h2 class="mb-0 vb-article-font">@fullArticleInfo.First().Name</h2>
             <button type="button" class="btn-close" @onclick="CloseArticle" aria-label="Sulje"></button>
         </div>
         <div class="fs-7">
-            EAN: @chosenArticle.First().Ean
+            EAN: @fullArticleInfo.First().Ean
         </div>
         <div class="d-flex flex-column flex-md-row justify-content-between">
             <div>
@@ -14,17 +16,20 @@
             </div>
             <div class="align-self-md-end">
                 <div class="d-flex justify-content-center my-3 ms-2">
-                    <button class="btn btn-warning" type="button" @onclick="ManagePrices">Muokkaa hintoja</button>
+                    <a href="/Tuoteartikkelit/#price-form">
+                        <button class="btn vb-btn vb-bg-pink" id="edit-prices-btn" type="button" @onclick="ManagePrices">Muokkaa hintoja</button>
+                    </a>
+                    
                 </div>
                 <div class="d-flex justify-content-end fst-italic">
-                    Päivitetty: @(chosenArticle.First().UpdatedAt != DateTime.MinValue ? chosenArticle.First().UpdatedAt.ToString("d") : chosenArticle.First().CreatedAt.ToString("d"))
+                    Päivitetty: @(fullArticleInfo.First().UpdatedAt != DateTime.MinValue ? fullArticleInfo.First().UpdatedAt.ToString("d") : fullArticleInfo.First().CreatedAt.ToString("d"))
                 </div>    
             </div>
         </div>
         <hr />
         <div>
             <h3 class="mb-0">Hinnasto</h3>
-            <table class="table table-hover table-bordered">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">Luokka</th>
@@ -33,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var row in chosenArticle)
+                    @foreach (var row in fullArticleInfo)
                     {
                         <tr>
                             <th class="col-4" scope="row">@row.PriceGroup?.Name</th>
@@ -46,38 +51,40 @@
         </div>
     </div>
 }
-@if (articleInfo is not null)
+@if (basicArticleInfo is not null)
 {
-    <CascadingValue Value="articleInfo" Name="Article">
-        <ManagePricesForm CloseEdit="ClosePriceEdit"/>
-    </CascadingValue>
+        <CascadingValue Value="basicArticleInfo" Name="Article">
+            <ManagePricesForm CloseEdit="ClosePriceEdit"/>
+        </CascadingValue>
 }
+<AnchorNavigation />
 
 @code {
     [CascadingParameter(Name = "ChosenArticle")]
-    private IEnumerable<FullArticlesModel>? chosenArticle { get; set; }
+    IEnumerable<FullArticlesModel>? fullArticleInfo { get; set; }
 
     [Parameter]
-    public EventCallback CloseComponent { get; set; }
+    public EventCallback<FullArticlesModel> CloseComponent { get; set; }
 
-    ArticlesModel? articleInfo;
+    ArticlesModel? basicArticleInfo;
 
     private void ManagePrices()
     {
-        articleInfo = new ArticlesModel()
+        basicArticleInfo = new ArticlesModel()
         { 
-            Id = chosenArticle!.First().Id,
-            Name = chosenArticle!.First().Name,
-            Ean = chosenArticle!.First().Ean,
-            CreatedAt = chosenArticle!.First().CreatedAt,
-            UpdatedAt = chosenArticle!.First().UpdatedAt
+            Id = fullArticleInfo!.First().Id,
+            Name = fullArticleInfo!.First().Name,
+            Ean = fullArticleInfo!.First().Ean,
+            CreatedAt = fullArticleInfo!.First().CreatedAt,
+            UpdatedAt = fullArticleInfo!.First().UpdatedAt
         };
     }
 
     private void ClosePriceEdit()
     {
-        articleInfo = null;
-        CloseArticle();
+        basicArticleInfo = null;
+        ReloadArticle();
     } 
-    private void CloseArticle() => CloseComponent.InvokeAsync();
+    private void CloseArticle() => CloseComponent.InvokeAsync(null);
+    private void ReloadArticle() => CloseComponent.InvokeAsync(fullArticleInfo!.First());
 }

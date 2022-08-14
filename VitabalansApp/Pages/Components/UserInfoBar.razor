@@ -1,0 +1,60 @@
+﻿@inject ILocalStorageService _localStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavMngr
+
+<AuthorizeView>
+    <Authorized>
+        <div class="d-flex justify-content-center border border-1 bg-light px-2">
+            <span class="bi bi-person-circle fs-2" aria-hidden="true"></span>
+            <div class="fs-6 ms-2 align-self-center overflow-hidden">
+                @context?.User?.Identity?.Name
+            </div>
+            <div class="d-flex align-items-center ms-1">
+                <button type="button" class="btn btn-close border border-1 vb-hover-pink" @onclick="LogOut"></button>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="d-flex flex-column justify-content-center align-items-center vb-fill-sidebar mx-4">
+            <div class="text-center fst-italic fs-5">
+                Kirjaudu sisään käyttääksesi applikaatiota
+            </div>
+            <div class="mt-3">
+                <button type="button" class="btn vb-btn vb-bg-turquoise" @onclick="GoToLoginPage">Kirjaudu sisään</button>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+@if (showPrompt)
+{
+    <CascadingValue Value="@("logout")" Name="PromptType">
+        <ModalPrompt SendConfirmation="(b) => ConfirmLogOut(b)"/>
+    </CascadingValue>
+}
+
+@code {
+    private bool showPrompt;
+
+    //private void LogOut() => showPrompt = true;
+    private async Task LogOut() => await ConfirmLogOut(true);
+
+    private async Task ConfirmLogOut(bool confirm)
+    {
+        if (confirm)
+        {
+            await _localStorage.RemoveItemAsync("jwt");
+            await AuthStateProvider.GetAuthenticationStateAsync();
+            NavMngr.NavigateTo("/");
+        }
+        else
+        {
+            showPrompt = false;
+        }
+    }
+
+    private void GoToLoginPage()
+    {
+        NavMngr.NavigateTo("/Kirjaudu");
+    }
+
+}

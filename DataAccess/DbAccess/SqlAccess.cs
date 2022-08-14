@@ -29,6 +29,25 @@ public class SqlAccess : ISqlAccess
         await connection.ExecuteAsync(sqlProcedure, parameters);
     }
 
+    public async Task<bool> WriteSqlDataCheckSuccess<T>(string sqlProcedure, T parameters, string connectionId = "default")
+    {
+        using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));
+
+        bool success = false;
+        try
+        {
+            await connection.ExecuteAsync(sqlProcedure, parameters);
+            success = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("----------------------------------");
+            Console.WriteLine(ex);
+            Console.WriteLine("----------------------------------");
+        }
+        return success;
+    }
+
     public async Task<string> WriteSqlDataReturnId<T>(string sql, T param, string connectionId = "default")
     {
         using IDbConnection connection = new MySqlConnection(_config.GetConnectionString(connectionId));
@@ -53,7 +72,7 @@ public class SqlAccess : ISqlAccess
     }
 
     // Task specific methods
-    public async Task<FullCustomersModel> LoadCustomerInfo(string sql, object param, string split, string connId = "default")
+    public async Task<FullCustomersModel?> LoadCustomerInfo(string sql, object param, string split, string connId = "default")
     {
         using IDbConnection conn = new MySqlConnection(_config.GetConnectionString(connId));
 
@@ -86,7 +105,7 @@ public class SqlAccess : ISqlAccess
         return customer;
     }
 
-    public async Task<List<FullOrdersModel>> LoadManyOrderDetails(string sql, object param, string split, string connId = "default")
+    public async Task<List<FullOrdersModel>?> LoadManyOrderDetails(string sql, object param, string split, string connId = "default")
     {
         using IDbConnection conn = new MySqlConnection(_config.GetConnectionString(connId));
 
@@ -111,5 +130,27 @@ public class SqlAccess : ISqlAccess
         }
 
         return finalOrders;
+    }
+
+    public async Task<DbRowCountModel?> LoadDatabaseCount(string sql, object param, string connId = "default")
+    {
+        using IDbConnection conn = new MySqlConnection(_config.GetConnectionString(connId));
+
+        DbRowCountModel model = new DbRowCountModel();
+
+        using (var lists = await conn.QueryMultipleAsync(sql, param))
+        {
+            try
+            {
+                model.ArticleCount = lists.Read<long>().Single();
+                model.OrderCount = lists.Read<long>().Single();
+                model.CustomerCount = lists.Read<long>().Single();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        return model;
     }
 }

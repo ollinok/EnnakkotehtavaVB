@@ -7,9 +7,11 @@
         Task<IEnumerable<T>> LoadSqlData<T, U>(string sqlProcedure, U parameters, string connectionId = "default");
         Task WriteSqlData<T>(string sqlProcedure, T parameters, string connectionId = "default");
         Task<string> WriteSqlDataReturnId<T>(string sql, T param, string connectionId = "default");
+        Task<bool> WriteSqlDataCheckSuccess<T>(string sqlProcedure, T parameters, string connectionId = "default");
 
         // Task specific methods
-        Task<FullCustomersModel> LoadCustomerInfo(string sql, object param, string split, string connId = "default");
-        Task<List<FullOrdersModel>> LoadManyOrderDetails(string sql, object param, string split, string connId = "default");
+        Task<FullCustomersModel?> LoadCustomerInfo(string sql, object param, string split, string connId = "default");
+        Task<List<FullOrdersModel>?> LoadManyOrderDetails(string sql, object param, string split, string connId = "default");
+        Task<DbRowCountModel?> LoadDatabaseCount(string sql, object param, string connId = "default");
     }
 }

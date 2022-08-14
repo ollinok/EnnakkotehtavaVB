@@ -1,5 +1,4 @@
 ﻿@using Models;
-@using VitabalansApp.Pages.Components.Utility;
 
 @if (article is null)
 {
@@ -21,7 +20,7 @@
                         <InputText class="form-control" id="nimi" placeholder="Nimi" @bind-Value="articleModel.Title" title="Tuotteen nimi" />
                     </div>
                     <div class="py-2">
-                        <label for="mg" class="form-label">Annoksen suuruus:</label>
+                        <label for="mg" class="form-label">Annoksen suuruus (mg):</label>
                         <InputNumber class="form-control" id="mg" @bind-Value="articleModel.Mg" title="Annoksen suuruus milligrammoissa"/>
                     </div>
                     <div class="py-2">
@@ -35,8 +34,8 @@
                     <DataAnnotationsValidator />
                     @*<ValidationSummary />*@
                     <div class="d-flex justify-content-md-end gap-md-4 justify-content-between py-2">
-                        <button type="button" class="btn btn-danger" @onclick="CancelArticleCreation">Peruuta</button>
-                        <button type="submit" class="btn btn-success">Luo</button>
+                        <button type="button" class="btn vb-btn vb-bg-pink vb-btn-modal" @onclick="CancelArticleCreation">Peruuta</button>
+                        <button type="submit" class="btn vb-btn vb-bg-turquoise vb-btn-modal">Luo</button>
                     </div>
                     @*<ValidationMessage For="() => articleModel.Title" />*@
                 </EditForm>

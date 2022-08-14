@@ -8,7 +8,7 @@
         @oninput="((i) => SearchHandler((string)i.Value!))"
         @onkeydown="@BrowseSuggestions"
     />
-    @if (listOfItems is not null && !closeList && searchText != "")
+    @if (listOfItems is not null && !closeList && searchText != "" && listOfItems.Count() > 1)
     {
         <div class="position-absolute vb-autosearch-bg">
             <ul class="list-group">
@@ -40,10 +40,14 @@
         await FilterResults.InvokeAsync(searchText);
     }
 
-    private void BrowseSuggestions(KeyboardEventArgs e)
+    private async Task BrowseSuggestions(KeyboardEventArgs e)
     {
         // TODO
-        // Console.WriteLine(e.Code);
+        Console.WriteLine(e.Code);
+        //if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        //{
+        //    await SearchHandler(listOfItems?.FirstOrDefault() ?? "");
+        //}
     }
 
 }

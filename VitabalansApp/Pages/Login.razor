@@ -1,0 +1,102 @@
+﻿@page "/Kirjaudu"
+@inject IUsersData _usersData
+@inject ILocalStorageService _localStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavMngr
+@using VitabalansApp.Authentication
+
+<div class="d-flex flex-column align-items-center py-3">
+    <div class="col-11 col-sm-9 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+        @if (!showRegistration)
+        {
+            <h1 class="text-center">Kirjaudu sisään</h1>
+            <div class="border border-1 px-4 py-3 bg-light @(borderColor)">
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-close" @onclick="GoToHomePage"></button>
+                </div>
+                <EditForm Model="loginInfo" OnValidSubmit="LoginUser">
+                    <DataAnnotationsValidator />
+                    @*<ValidationMessage For="() => loginInfo.Email" />*@
+                    <div class="py-2">
+                        <label for="email" class="form-label">Sähköposti:</label>
+                        <InputText class="form-control" id="email" type="email" title="Sähköposti"
+                            @bind-Value="loginInfo.Email" @oninput="ClearBorders"
+                            placeholder="Email" autocomplete="off"
+                        />
+                    </div>
+                    @*<ValidationMessage For="() => loginInfo.Password" />*@
+                    <div class="py-2">
+                        <label for="password" class="form-label">Salasana:</label>
+                        <InputText class="form-control" id="password" type="password" title="Salasana"
+                            @bind-Value="loginInfo.Password" @oninput="ClearBorders"
+                            placeholder="Salasana" autocomplete="off"
+                        />
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <div class="text-danger align-self-center fst-italic">
+                            @message
+                        </div>
+                        <button type="submit" class="btn vb-btn vb-bg-turquoise">Kirjaudu</button>
+                    </div>
+                </EditForm>
+                <div class="ms-1 mt-1">
+                    <button class="vb-btn-nostyling vb-text-pink text-decoration-underline" @onclick="RegistrationFormToggle">
+                        Rekisteröidy
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <RegisterForm CloseComponent="RegistrationFormToggle" />
+        }
+    </div>
+</div>
+
+@code {
+    LoginModel loginInfo = new LoginModel();
+    private string borderColor = "";
+    private string message = "";
+    private bool showRegistration;
+
+    private async Task LoginUser()
+    {
+        var userInfo = await _usersData.AuthenticateUser(loginInfo);
+
+        if (userInfo is not null)
+        {
+            if (userInfo.Id != 0)
+            {
+                await _localStorage.SetItemAsync("jwt", $"{JwtData.CreateJWTToken(userInfo)}");
+                var token = await _localStorage.GetItemAsStringAsync("jwt");
+                await AuthStateProvider.GetAuthenticationStateAsync();
+
+                NavMngr.NavigateTo("/");
+            }
+            else
+            {
+                borderColor = "border-danger";
+                message = "Väärä salasana";
+            }
+        }
+        else
+        {
+            borderColor = "border-danger";
+            message = "Tunnusta ei löytynyt";
+        }
+    }
+
+    private void RegistrationFormToggle()
+    {
+        showRegistration = !showRegistration;
+        loginInfo = new LoginModel();
+    } 
+
+    private void ClearBorders()
+    {
+        borderColor = "";
+        message = "";
+    }
+
+    private void GoToHomePage() => NavMngr.NavigateTo("/");
+}
