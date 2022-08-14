@@ -40,6 +40,10 @@ html, body {
     font-size: calc(2rem + 2vw) !important;
 }
 
+.vb-article-font {
+    font-size: calc(0.01rem + 2vw) !important;
+}
+
 .vb-btn {
 
 }
@@ -185,4 +189,11 @@ a, .btn-link {
     .vb-fill-sidebar {
         height: auto;
     }
+}
+
+@media (max-width: 1200px) {
+    .vb-article-font {
+        font-size: calc(0.9rem + 2vw) !important;
+    }
+
 }
