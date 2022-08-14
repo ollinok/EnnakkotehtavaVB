@@ -55,12 +55,12 @@
                                 <tr>
                                     <td class="col-6">@(item.Article?.Name ?? "UNKNOWN ITEM")</td>
                                     <td class="col-3 text-end">@item.Quantity</td>
-                                    <td class="col-3 text-end">@item.Price €</td>
+                                    <td class="col-3 text-end">@(item.Price * item.Quantity) €</td>
                                 </tr>
                             }
                             <tr>
                                 <td colspan="2" class="text-end fw-bold">Yhteensä:</td>
-                                <td class="text-end fw-bold">@order.OrderItems.Sum(p => p.Price) €</td>
+                                <td class="text-end fw-bold">@order.OrderItems.Sum(p => p.Price * p.Quantity) €</td>
                             </tr>
                         </tbody>
                     </table>
