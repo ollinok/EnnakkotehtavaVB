@@ -4,7 +4,7 @@
 @inject NavigationManager NavMngr
 @inject AuthenticationStateProvider AuthStateProvider
 
-@if (customer is not null)
+@if (customer is not null && customer.Id != 0)
 {
     <div class="container-fluid">
         <div class="d-flex justify-content-between">
@@ -70,22 +70,36 @@
             </div>
         </div>      
     </div>
-}else
+}
+else if (customer is null)
 {
-    <div>No customer found with the ID of @Id</div>
+    <div>Ei käyttäjää tunnuksella: @Id</div>
+}
+else
+{
+    <div>Ladataan...</div>
 }
 
 @code {
     [Parameter]
     public string? Id { get; set; }
 
-    private FullCustomersModel? customer;
+    private FullCustomersModel? customer = new FullCustomersModel();
     private char[] greek = "\u0391\u0392\u0393\u0394\u0395\u0396\u0397\u0398\u0399\u039A".ToCharArray();
 
     protected async override Task OnInitializedAsync()
     {
         await AuthStateProvider.GetAuthenticationStateAsync();
-        customer = await _customersData.GetCustomerInfo(long.Parse(Id!));
+        var result = await _customersData.GetCustomerInfo(long.Parse(Id!));
+
+        if (result is null)
+        {
+            customer = null;
+        }
+        else
+        {
+            customer = result;
+        }
     }
 
     private void GoToCustomersPage() => NavMngr.NavigateTo("/Asiakkaat");
